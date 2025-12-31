@@ -1,0 +1,50 @@
+# Spec-Kit Configuration
+# Todo App - Hackathon II
+
+name: hackathon-todo
+version: "1.0"
+
+structure:
+  specs_dir: specs
+  features_dir: specs/features
+  api_dir: specs/api
+  database_dir: specs/database
+  ui_dir: specs/ui
+
+phases:
+  - name: phase1-console
+    features: [task-crud]
+    status: completed
+  - name: phase2-web
+    features: [task-crud, authentication, dashboard]
+    status: in-progress
+  - name: phase3-chatbot
+    features: [task-crud, authentication, chatbot]
+    status: pending
+  - name: phase4-kubernetes
+    features: [task-crud, authentication, chatbot, deployment]
+    status: pending
+  - name: phase5-cloud
+    features: [task-crud, authentication, chatbot, deployment, kafka, dapr]
+    status: pending
+
+technology_stack:
+  frontend:
+    framework: Next.js 16+
+    language: TypeScript
+    styling: Tailwind CSS
+    authentication: Better Auth
+    deployment: Vercel
+  backend:
+    framework: FastAPI
+    language: Python 3.13+
+    orm: SQLModel
+    database: Neon PostgreSQL
+    deployment: Railway/Render
+
+spec_driven:
+  enabled: true
+  workflow: "Specify → Plan → Tasks → Implement"
+  tools:
+    - Claude Code
+    - Spec-Kit Plus

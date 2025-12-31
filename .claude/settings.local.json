@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for pid in 10884 18436 5532 16752 8624)",
+      "Bash(do taskkill //PID $pid //F)",
+      "Bash(done)",
+      "Bash(curl:*)",
+      "Bash(python:*)"
+    ]
+  }
+}

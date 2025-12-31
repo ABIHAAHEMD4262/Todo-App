@@ -60,3 +60,19 @@ logs/
 *.bak
 *.swp
 .cache/
+
+# Node.js / Next.js
+node_modules/
+.next/
+out/
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Alembic
+backend/migrations/versions/*.pyc

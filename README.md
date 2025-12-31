@@ -1,8 +1,66 @@
-# Todo Console App - Phase I
+# Todo App - Hackathon II Evolution
 
-**Hackathon II Submission** | **Phase**: I - Console Application | **Status**: ✅ Complete
+**Hackathon II Submission** | **Current Phase**: II - Full-Stack Web Application | **Status**: 🚧 In Progress
 
-A command-line interface (CLI) todo application built using Python 3.13+ with in-memory storage. Supports 5 core CRUD operations through an interactive menu system.
+Evolution of a todo application from console app to cloud-native AI chatbot:
+- ✅ **Phase I**: Console Application (Complete)
+- 🚧 **Phase II**: Full-Stack Web Application (In Progress)
+- 📋 **Phase III**: AI Chatbot with MCP
+- 📋 **Phase IV**: Kubernetes Deployment
+- 📋 **Phase V**: Cloud + Event-Driven Architecture
+
+---
+
+## Phase II: Full-Stack Web Application
+
+A modern, multi-user todo web application built with Next.js 16+, FastAPI, and PostgreSQL.
+
+### Phase II Features
+
+✅ **Required (Basic Level)**:
+1. Add Task
+2. View Task List
+3. Update Task
+4. Delete Task
+5. Mark Complete/Incomplete
+
+✅ **Authentication**:
+- User Signup/Signin (Better Auth)
+- JWT Authentication
+- Protected Routes
+- Multi-user Support
+
+✅ **Bonus Features**:
+- User Dashboard with Statistics
+- Recent Activity Feed
+- Task Filtering (All/Pending/Completed)
+
+### Tech Stack (Phase II)
+
+**Frontend**:
+- Next.js 16+ (App Router)
+- TypeScript
+- Tailwind CSS
+- Better Auth
+- React Hook Form + Zod
+
+**Backend**:
+- FastAPI
+- SQLModel (ORM)
+- Neon PostgreSQL
+- JWT Authentication
+- Pydantic Validation
+
+**Deployment**:
+- Frontend: Vercel
+- Backend: Railway/Render
+- Database: Neon (Serverless PostgreSQL)
+
+---
+
+## Phase I: Console Application (Complete)
+
+A command-line interface (CLI) todo application built using Python 3.13+ with in-memory storage.
 
 ---
 

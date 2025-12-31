@@ -208,3 +208,208 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
+
+---
+
+# Hackathon II - Project-Specific Instructions
+
+## Project Overview
+**Todo App - Spec-Driven Development Hackathon**
+
+Current Phase: **Phase II - Full-Stack Web Application**
+
+Transform console app into a modern web application with:
+- Next.js 16+ frontend
+- FastAPI backend
+- Neon PostgreSQL database
+- Better Auth authentication
+- Multi-user support
+
+## Spec-Kit Organization
+
+Specifications are organized in `/specs` following Spec-Kit conventions:
+
+### Core Specs
+- **`specs/overview.md`** - Project goals, tech stack, success criteria
+- **`specs/architecture.md`** - System architecture, auth flow, data flow
+
+### Feature Specs (`specs/features/`)
+- **`task-crud.md`** - 5 Basic Level features (Add, View, Update, Delete, Mark Complete)
+- **`authentication.md`** - User signup/login with Better Auth + JWT
+- **`dashboard.md`** - Task statistics and activity feed (bonus feature)
+
+### Technical Specs
+- **`specs/api/rest-endpoints.md`** - Complete REST API documentation
+- **`specs/database/schema.md`** - Database schema, indexes, migrations
+- **`specs/ui/components.md`** - Component specifications
+- **`specs/ui/pages.md`** - Page specifications
+
+### Legacy Specs
+- **`specs/phase2-webapp/`** - Original consolidated specs (spec.md, plan.md, tasks.md)
+
+## Project Structure
+
+```
+hackathon-todo/
+├── .spec-kit/config.yaml   # Spec-Kit configuration
+├── specs/                  # Organized specifications
+│   ├── features/
+│   ├── api/
+│   ├── database/
+│   └── ui/
+├── frontend/               # Next.js 16+ (App Router)
+│   ├── CLAUDE.md          # Frontend-specific instructions
+│   ├── app/               # Pages and layouts
+│   ├── components/        # React components
+│   ├── lib/               # API client, utilities
+│   ├── hooks/             # Custom hooks
+│   └── types/             # TypeScript types
+├── backend/                # FastAPI
+│   ├── CLAUDE.md          # Backend-specific instructions
+│   ├── app/
+│   │   ├── main.py        # Entry point
+│   │   ├── models.py      # SQLModel models
+│   │   ├── schemas.py     # Pydantic schemas
+│   │   ├── routes/        # API endpoints
+│   │   └── auth.py        # JWT verification
+│   └── migrations/        # Alembic
+├── .claude/                # Reusable Intelligence
+│   ├── skills/            # Domain expertise
+│   └── agents/            # Autonomous specialists
+└── CLAUDE.md              # This file
+```
+
+## Technology Stack
+
+**Frontend**: Next.js 16+, TypeScript, Tailwind CSS, Better Auth
+**Backend**: FastAPI, SQLModel, Pydantic v2
+**Database**: Neon Serverless PostgreSQL
+**Authentication**: Better Auth + JWT
+**Deployment**: Vercel (frontend), Railway/Render (backend)
+
+## Development Workflow
+
+### Reading Specs
+Always read relevant specs before implementing:
+
+```
+For authentication:
+→ @specs/features/authentication.md
+→ @specs/api/rest-endpoints.md (auth section)
+→ @specs/database/schema.md (users table)
+→ @backend/CLAUDE.md (backend patterns)
+→ @frontend/CLAUDE.md (frontend patterns)
+```
+
+### Spec References
+Use `@` to reference specs in conversations:
+```
+@specs/features/task-crud.md
+@specs/api/rest-endpoints.md
+@specs/database/schema.md
+```
+
+### Implementation Flow
+```
+1. Read feature spec → Understand requirements
+2. Check API spec → Understand contracts
+3. Check database spec → Understand schema
+4. Implement backend → @backend/CLAUDE.md
+5. Implement frontend → @frontend/CLAUDE.md
+6. Test → Verify all acceptance criteria
+```
+
+## Hackathon Requirements (Phase II)
+
+### Required Features (Basic Level)
+1. ✅ Add Task
+2. ✅ View Task List
+3. ✅ Update Task
+4. ✅ Delete Task
+5. ✅ Mark as Complete
+
+### Required: Authentication
+- ✅ User Signup/Signin (Better Auth)
+- ✅ JWT token authentication
+- ✅ Protected routes and API endpoints
+
+### Bonus: Dashboard (Optional)
+- ✅ Task statistics (total, pending, completed, rate)
+- ✅ Recent activity feed
+- ✅ Quick actions
+
+### Submission Requirements
+- Public GitHub repository
+- Deployed app (Vercel + Railway/Render)
+- Demo video (max 90 seconds)
+- README with setup instructions
+- All specifications documented
+
+**Due Date**: December 14, 2025
+
+## Commands
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev              # http://localhost:3000
+npm run build
+```
+
+### Backend
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload  # http://localhost:8000
+alembic upgrade head     # Run migrations
+```
+
+### API Docs
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
+
+## Environment Variables
+
+### Frontend (.env.local)
+```
+NEXT_PUBLIC_API_URL=http://localhost:8000
+DATABASE_URL=postgresql://...
+BETTER_AUTH_SECRET=<openssl rand -base64 32>
+```
+
+### Backend (.env)
+```
+DATABASE_URL=postgresql://...
+BETTER_AUTH_SECRET=<same as frontend>
+FRONTEND_URL=http://localhost:3000
+```
+
+## Reusable Intelligence
+
+### Skills (.claude/skills/)
+- `phase2-frontend-ui` - Next.js 16+ patterns
+- `phase2-backend-api` - FastAPI patterns
+- `phase2-database-schema` - SQLModel patterns
+- `phase2-auth-setup` - Better Auth + JWT
+- `phase2-fullstack-integration` - Frontend ↔ Backend
+
+### Agents (.claude/agents/)
+- `phase2-frontend-specialist` - Frontend implementation
+- `phase2-backend-specialist` - Backend implementation
+- `phase2-fullstack-architect` - System design
+- `phase2-security-specialist` - Security review
+
+## Key Resources
+
+- **Hackathon Instructions**: `Hackathon II - Todo Spec-Driven Development.md`
+- **Submission Form**: https://forms.gle/KMKEKaFUD6ZX4UtY8
+- **Next.js Docs**: https://nextjs.org/docs
+- **FastAPI Docs**: https://fastapi.tiangolo.com/
+- **Better Auth Docs**: https://better-auth.com/
+
+---
+
+**Status**: Phase II In Progress
+**Last Updated**: 2025-12-30
+**Next Milestone**: Complete implementation and deploy by Dec 14, 2025
