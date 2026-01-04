@@ -96,61 +96,63 @@ export default function DashboardPage() {
             {/* Statistics Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {/* Total Tasks */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="group bg-white rounded-2xl shadow-lg hover:shadow-xl border border-gray-100 p-6 transition-all duration-300 hover:-translate-y-1">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Total Tasks</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">
+                    <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Total Tasks</p>
+                    <p className="text-4xl font-bold text-gray-900 mt-3">
                       {stats.total_tasks}
                     </p>
                   </div>
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <BarChart3 className="w-6 h-6 text-blue-600" />
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <BarChart3 className="w-7 h-7 text-white" />
                   </div>
                 </div>
               </div>
 
               {/* Pending Tasks */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="group bg-white rounded-2xl shadow-lg hover:shadow-xl border border-gray-100 p-6 transition-all duration-300 hover:-translate-y-1">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Pending</p>
-                    <p className="text-3xl font-bold text-yellow-600 mt-2">
+                    <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Pending</p>
+                    <p className="text-4xl font-bold text-amber-600 mt-3">
                       {stats.pending_tasks}
                     </p>
                   </div>
-                  <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <Circle className="w-6 h-6 text-yellow-600" />
+                  <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <Clock className="w-7 h-7 text-white" />
                   </div>
                 </div>
               </div>
 
               {/* Completed Tasks */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="group bg-white rounded-2xl shadow-lg hover:shadow-xl border border-gray-100 p-6 transition-all duration-300 hover:-translate-y-1">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Completed</p>
-                    <p className="text-3xl font-bold text-green-600 mt-2">
+                    <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Completed</p>
+                    <p className="text-4xl font-bold text-emerald-600 mt-3">
                       {stats.completed_tasks}
                     </p>
                   </div>
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <CheckCircle2 className="w-6 h-6 text-green-600" />
+                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <CheckCircle2 className="w-7 h-7 text-white" />
                   </div>
                 </div>
               </div>
 
               {/* Completion Rate */}
-              <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-sm p-6 text-white">
-                <div className="flex items-center justify-between">
+              <div className="group bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-600 rounded-2xl shadow-xl hover:shadow-2xl p-6 text-white transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
+                <div className="flex items-center justify-between relative z-10">
                   <div>
-                    <p className="text-sm font-medium text-blue-100">Completion Rate</p>
-                    <p className="text-3xl font-bold mt-2">
+                    <p className="text-sm font-semibold text-purple-100 uppercase tracking-wide">Success Rate</p>
+                    <p className="text-4xl font-bold mt-3">
                       {stats.completion_rate.toFixed(0)}%
                     </p>
                   </div>
-                  <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6" />
+                  <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <TrendingUp className="w-7 h-7" />
                   </div>
                 </div>
               </div>
@@ -159,8 +161,11 @@ export default function DashboardPage() {
             {/* Two Column Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Recent Activity - 2/3 width */}
-              <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Activity</h2>
+              <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                  <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full"></div>
+                  Recent Activity
+                </h2>
 
                 {stats.recent_activity.length === 0 ? (
                   <div className="text-center py-12">
@@ -169,27 +174,27 @@ export default function DashboardPage() {
                     <p className="text-sm text-gray-400 mt-1">Start creating tasks to see activity here</p>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {stats.recent_activity.map((activity, index) => (
                       <div
                         key={index}
-                        className="flex items-start gap-4 p-4 rounded-lg border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition"
+                        className="group flex items-start gap-4 p-4 rounded-xl border border-gray-100 hover:border-blue-200 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-transparent transition-all duration-200"
                       >
                         {/* Action Icon */}
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                          activity.action === 'created' ? 'bg-blue-100' :
-                          activity.action === 'completed' ? 'bg-green-100' :
-                          activity.action === 'updated' ? 'bg-yellow-100' :
-                          'bg-red-100'
+                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm transition-transform group-hover:scale-110 ${
+                          activity.action === 'created' ? 'bg-gradient-to-br from-blue-500 to-blue-600' :
+                          activity.action === 'completed' ? 'bg-gradient-to-br from-emerald-500 to-emerald-600' :
+                          activity.action === 'updated' ? 'bg-gradient-to-br from-amber-500 to-amber-600' :
+                          'bg-gradient-to-br from-red-500 to-red-600'
                         }`}>
                           {activity.action === 'created' ? (
-                            <Plus className={`w-5 h-5 text-blue-600`} />
+                            <Plus className="w-5 h-5 text-white" />
                           ) : activity.action === 'completed' ? (
-                            <CheckCircle2 className={`w-5 h-5 text-green-600`} />
+                            <CheckCircle2 className="w-5 h-5 text-white" />
                           ) : activity.action === 'updated' ? (
-                            <Circle className={`w-5 h-5 text-yellow-600`} />
+                            <Circle className="w-5 h-5 text-white" />
                           ) : (
-                            <Circle className={`w-5 h-5 text-red-600`} />
+                            <Circle className="w-5 h-5 text-white" />
                           )}
                         </div>
 
@@ -219,20 +224,24 @@ export default function DashboardPage() {
               </div>
 
               {/* Quick Actions - 1/3 width */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                  <div className="w-1 h-6 bg-gradient-to-b from-violet-500 to-indigo-600 rounded-full"></div>
+                  Quick Actions
+                </h2>
 
                 <div className="space-y-3">
                   <Link
                     href="/tasks"
-                    className="block w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold text-center hover:from-blue-700 hover:to-indigo-700 transition shadow-sm hover:shadow-md"
+                    className="group block w-full px-5 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white rounded-xl font-bold text-center hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 hover:-translate-y-0.5 relative overflow-hidden"
                   >
-                    View All Tasks
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></div>
+                    <span className="relative">View All Tasks</span>
                   </Link>
 
                   <Link
                     href="/tasks"
-                    className="block w-full px-4 py-3 bg-white text-gray-700 rounded-lg font-semibold text-center border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition"
+                    className="block w-full px-5 py-4 bg-white text-gray-700 rounded-xl font-bold text-center border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 hover:-translate-y-0.5"
                   >
                     Create New Task
                   </Link>
@@ -241,14 +250,19 @@ export default function DashboardPage() {
                 {/* Progress Summary */}
                 {stats.total_tasks > 0 && (
                   <div className="mt-6 pt-6 border-t border-gray-200">
-                    <p className="text-sm font-medium text-gray-700 mb-3">Progress</p>
-                    <div className="relative w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full transition-all duration-500"
-                        style={{ width: `${stats.completion_rate}%` }}
-                      />
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-sm font-bold text-gray-700">Your Progress</p>
+                      <p className="text-sm font-bold text-indigo-600">{stats.completion_rate.toFixed(0)}%</p>
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">
+                    <div className="relative w-full h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+                      <div
+                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-600 rounded-full transition-all duration-700 shadow-lg"
+                        style={{ width: `${stats.completion_rate}%` }}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 animate-shimmer"></div>
+                      </div>
+                    </div>
+                    <p className="text-xs font-medium text-gray-600 mt-2">
                       {stats.completed_tasks} of {stats.total_tasks} tasks completed
                     </p>
                   </div>
@@ -256,20 +270,22 @@ export default function DashboardPage() {
 
                 {/* Motivational Message */}
                 {stats.pending_tasks === 0 && stats.total_tasks > 0 ? (
-                  <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="text-sm font-medium text-green-800">
+                  <div className="mt-6 p-4 bg-gradient-to-br from-emerald-50 to-green-50 border-2 border-emerald-200 rounded-xl relative overflow-hidden">
+                    <div className="absolute top-0 right-0 text-6xl opacity-10">🎉</div>
+                    <p className="text-sm font-bold text-emerald-800 relative">
                       All caught up!
                     </p>
-                    <p className="text-xs text-green-600 mt-1">
+                    <p className="text-xs text-emerald-600 mt-1 relative">
                       You've completed all your tasks. Great job!
                     </p>
                   </div>
                 ) : stats.pending_tasks > 0 ? (
-                  <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-sm font-medium text-blue-800">
+                  <div className="mt-6 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl relative overflow-hidden">
+                    <div className="absolute top-0 right-0 text-6xl opacity-10">💪</div>
+                    <p className="text-sm font-bold text-blue-800 relative">
                       Keep going!
                     </p>
-                    <p className="text-xs text-blue-600 mt-1">
+                    <p className="text-xs text-blue-600 mt-1 relative">
                       {stats.pending_tasks} task{stats.pending_tasks !== 1 ? 's' : ''} remaining
                     </p>
                   </div>
