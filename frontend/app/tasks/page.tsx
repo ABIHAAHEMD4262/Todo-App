@@ -7,9 +7,9 @@ import { useAuthContext } from '@/components/providers/auth-provider'
 import { TaskList } from '@/components/tasks/task-list'
 import { TaskForm } from '@/components/tasks/task-form'
 import { api } from '@/lib/api'
-import { Task, TaskStatus } from '@/types'
+import { Task, TaskStatus, TaskPriority, TaskSortBy, SortOrder } from '@/types'
 import { toast } from 'sonner'
-import { Plus, Loader2, ListFilter } from 'lucide-react'
+import { Plus, Loader2, Search, X, ArrowUpDown } from 'lucide-react'
 
 export default function TasksPage() {
   const router = useRouter()
@@ -23,35 +23,18 @@ export default function TasksPage() {
   const [formLoading, setFormLoading] = useState(false)
   const [togglingTaskId, setTogglingTaskId] = useState<number | null>(null)
 
+  // Phase I Features: Search, Filter, Sort
+  const [searchQuery, setSearchQuery] = useState('')
+  const [priorityFilter, setPriorityFilter] = useState<TaskPriority | ''>('')
+  const [tagFilter, setTagFilter] = useState('')
+  const [sortBy, setSortBy] = useState<TaskSortBy>('created_at')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
+
   // Redirect if not authenticated
   useEffect(() => {
-    console.log('=== TASKS PAGE AUTH CHECK ===')
-    console.log('authLoading:', authLoading)
-    console.log('user:', user?.email || 'null')
-
-    // Double-check localStorage before redirecting (client-side only)
     if (!authLoading && !user) {
-      if (typeof window !== 'undefined') {
-        const token = localStorage.getItem('auth_token')
-        const userData = localStorage.getItem('user_data')
-
-        console.log('localStorage check:')
-        console.log('  - auth_token:', token ? `${token.substring(0, 20)}...` : 'NULL')
-        console.log('  - user_data:', userData ? 'EXISTS' : 'NULL')
-        console.log('  - All localStorage keys:', Object.keys(localStorage))
-
-        // Only redirect if there's truly no session
-        if (!token || !userData) {
-          console.log('❌ REDIRECTING TO LOGIN - No session found')
-          router.push('/login')
-        } else {
-          console.log('⏳ Session exists in localStorage, waiting for context to sync...')
-        }
-      }
-    } else if (user) {
-      console.log('✓ User authenticated:', user.email, 'User ID:', user.id)
+      router.push('/login')
     }
-    console.log('=== END AUTH CHECK ===')
   }, [user, authLoading, router])
 
   // Load tasks
@@ -60,8 +43,56 @@ export default function TasksPage() {
 
     try {
       setLoading(true)
+
+      // Load all tasks with filters (search is done client-side)
       const response = await api.tasks.list(user.id, filter)
-      setTasks(response.tasks)
+
+      // Client-side search filtering
+      let filteredTasks = response.tasks
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase()
+        filteredTasks = response.tasks.filter(task =>
+          task.title.toLowerCase().includes(query) ||
+          (task.description && task.description.toLowerCase().includes(query))
+        )
+      }
+
+      // Client-side priority filtering
+      if (priorityFilter) {
+        filteredTasks = filteredTasks.filter(task => task.priority === priorityFilter)
+      }
+
+      // Client-side tag filtering
+      if (tagFilter.trim()) {
+        const tag = tagFilter.toLowerCase()
+        filteredTasks = filteredTasks.filter(task =>
+          task.tags && task.tags.some(t => t.toLowerCase().includes(tag))
+        )
+      }
+
+      // Client-side sorting
+      filteredTasks.sort((a, b) => {
+        let compareA: any = a[sortBy]
+        let compareB: any = b[sortBy]
+
+        // Handle priority sorting
+        if (sortBy === 'priority') {
+          const priorityOrder = { high: 3, medium: 2, low: 1 }
+          compareA = priorityOrder[a.priority]
+          compareB = priorityOrder[b.priority]
+        }
+
+        // Handle null values
+        if (compareA === null || compareA === undefined) return 1
+        if (compareB === null || compareB === undefined) return -1
+
+        // Compare
+        if (compareA < compareB) return sortOrder === 'asc' ? -1 : 1
+        if (compareA > compareB) return sortOrder === 'asc' ? 1 : -1
+        return 0
+      })
+
+      setTasks(filteredTasks)
     } catch (error) {
       console.error('Failed to load tasks:', error)
       toast.error('Failed to load tasks')
@@ -74,10 +105,10 @@ export default function TasksPage() {
     if (user) {
       loadTasks()
     }
-  }, [user, filter])
+  }, [user, filter, searchQuery, priorityFilter, tagFilter, sortBy, sortOrder])
 
   // Create task
-  const handleCreate = async (data: { title: string; description?: string }) => {
+  const handleCreate = async (data: any) => {
     if (!user) return
 
     try {
@@ -95,7 +126,7 @@ export default function TasksPage() {
   }
 
   // Update task
-  const handleUpdate = async (data: { title: string; description?: string }) => {
+  const handleUpdate = async (data: any) => {
     if (!user || !editingTask) return
 
     try {
@@ -116,14 +147,12 @@ export default function TasksPage() {
   const handleToggleComplete = async (taskId: number) => {
     if (!user || togglingTaskId !== null) return
 
-    // Find the task to check current state
     const task = tasks.find(t => t.id === taskId)
     if (!task) return
 
     try {
       setTogglingTaskId(taskId)
       await api.tasks.toggleComplete(user.id, taskId)
-      // Reload tasks from server to get the correct state
       await loadTasks()
       toast.success(task.completed ? 'Task marked as pending' : 'Task completed!')
     } catch (error) {
@@ -154,17 +183,7 @@ export default function TasksPage() {
     setEditingTask(task)
   }
 
-  // Show loading spinner while auth is loading or initial tasks are loading
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-      </div>
-    )
-  }
-
-  // Don't render if no user (redirect will happen in useEffect)
-  if (!user) {
+  if (authLoading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
@@ -194,6 +213,83 @@ export default function TasksPage() {
               : `${stats.pending} pending, ${stats.completed} completed`
             }
           </p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search tasks by title or description..."
+              className="w-full pl-10 pr-10 py-3 bg-white text-gray-900 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition placeholder:text-gray-400"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Advanced Filters */}
+        <div className="mb-4 flex flex-wrap gap-3">
+          {/* Priority Filter */}
+          <select
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value as TaskPriority | '')}
+            className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+          >
+            <option value="">All Priorities</option>
+            <option value="high">🔴 High Priority</option>
+            <option value="medium">🟡 Medium Priority</option>
+            <option value="low">🟢 Low Priority</option>
+          </select>
+
+          {/* Tag Filter */}
+          <div className="relative flex-1 min-w-[200px]">
+            <input
+              type="text"
+              value={tagFilter}
+              onChange={(e) => setTagFilter(e.target.value)}
+              placeholder="Filter by tag..."
+              className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+            />
+            {tagFilter && (
+              <button
+                onClick={() => setTagFilter('')}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+
+          {/* Sort Controls */}
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as TaskSortBy)}
+            className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+          >
+            <option value="created_at">Sort by Created Date</option>
+            <option value="title">Sort by Title</option>
+            <option value="priority">Sort by Priority</option>
+            <option value="due_date">Sort by Due Date</option>
+          </select>
+
+          <button
+            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+            className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition flex items-center gap-2"
+            title={sortOrder === 'asc' ? 'Ascending' : 'Descending'}
+          >
+            <ArrowUpDown className="w-4 h-4" />
+            {sortOrder === 'asc' ? '↑ A-Z' : '↓ Z-A'}
+          </button>
         </div>
 
         {/* Filters and Add Button */}
