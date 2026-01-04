@@ -7,6 +7,11 @@ export interface User {
 }
 
 // Task types
+export type TaskPriority = 'low' | 'medium' | 'high'
+export type TaskRecurrence = 'none' | 'daily' | 'weekly' | 'monthly'
+export type TaskSortBy = 'created_at' | 'title' | 'priority' | 'due_date' | 'id'
+export type SortOrder = 'asc' | 'desc'
+
 export interface Task {
   id: number
   user_id: string
@@ -15,17 +20,30 @@ export interface Task {
   completed: boolean
   created_at: string
   updated_at: string
+  priority: TaskPriority
+  tags: string[]
+  due_date: string | null
+  recurrence: TaskRecurrence
+  next_occurrence: string | null
 }
 
 export interface CreateTaskData {
   title: string
   description?: string
+  priority?: TaskPriority
+  tags?: string[]
+  due_date?: string
+  recurrence?: TaskRecurrence
 }
 
 export interface UpdateTaskData {
   title?: string
   description?: string
   completed?: boolean
+  priority?: TaskPriority
+  tags?: string[]
+  due_date?: string
+  recurrence?: TaskRecurrence
 }
 
 export type TaskStatus = 'all' | 'pending' | 'completed'

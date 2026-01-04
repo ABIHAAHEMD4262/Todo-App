@@ -20,7 +20,11 @@ export type LoginFormData = z.infer<typeof loginSchema>
 // Task validation schemas
 export const taskSchema = z.object({
   title: z.string().min(1, "Title is required").max(200, "Title must be less than 200 characters").trim(),
-  description: z.string().max(1000, "Description must be less than 1000 characters").trim().optional()
+  description: z.string().max(1000, "Description must be less than 1000 characters").trim().optional(),
+  priority: z.enum(['low', 'medium', 'high']).default('medium'),
+  tags: z.array(z.string().max(20)).max(10).default([]),
+  due_date: z.string().optional(),
+  recurrence: z.enum(['none', 'daily', 'weekly', 'monthly']).default('none')
 })
 
 export type TaskFormData = z.infer<typeof taskSchema>
@@ -28,7 +32,11 @@ export type TaskFormData = z.infer<typeof taskSchema>
 export const updateTaskSchema = z.object({
   title: z.string().min(1).max(200).trim().optional(),
   description: z.string().max(1000).trim().optional(),
-  completed: z.boolean().optional()
+  completed: z.boolean().optional(),
+  priority: z.enum(['low', 'medium', 'high']).optional(),
+  tags: z.array(z.string().max(20)).max(10).optional(),
+  due_date: z.string().optional(),
+  recurrence: z.enum(['none', 'daily', 'weekly', 'monthly']).optional()
 })
 
 export type UpdateTaskFormData = z.infer<typeof updateTaskSchema>
