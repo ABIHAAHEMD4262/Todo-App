@@ -29,7 +29,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [conversationId, setConversationId] = useState<number | null>(null);
+  const [conversationId, setConversationId] = useState<number | undefined>(undefined);
   const { user, loading } = useAuth();
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
@@ -85,7 +85,7 @@ export default function ChatPage() {
         conversationId
       );
 
-      if (!conversationId) {
+      if (conversationId === undefined) {
         setConversationId(response.conversation_id);
       }
 
