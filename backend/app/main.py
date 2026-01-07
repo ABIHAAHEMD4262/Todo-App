@@ -35,8 +35,8 @@ app.add_middleware(
 async def startup_event():
     """Initialize database on startup"""
     init_db()
-    print("✅ Database initialized")
-    print(f"✅ CORS enabled for: {FRONTEND_URL}")
+    print("[OK] Database initialized")
+    print(f"[OK] CORS enabled for: {FRONTEND_URL}")
 
 # Health check endpoint
 @app.get("/health", tags=["Health"])
@@ -58,7 +58,10 @@ async def root():
         "health": "/health"
     }
 
-# TODO: Include routers (after creating them)
-# from app.routes import tasks, dashboard
-# app.include_router(tasks.router, prefix="/api", tags=["tasks"])
-# app.include_router(dashboard.router, prefix="/api", tags=["dashboard"])
+# Include routers
+from app.routes import tasks, dashboard, chat
+from app.routes.auth import router as auth_router
+app.include_router(tasks.router, prefix="/api", tags=["tasks"])
+app.include_router(dashboard.router, prefix="/api", tags=["dashboard"])
+app.include_router(chat.router, prefix="/api", tags=["chat"])
+app.include_router(auth_router, prefix="/api", tags=["auth"])

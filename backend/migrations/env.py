@@ -9,6 +9,10 @@ from alembic import context
 import os
 import sys
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Add parent directory to path so we can import app modules
 sys.path.append(str(Path(__file__).resolve().parent.parent))

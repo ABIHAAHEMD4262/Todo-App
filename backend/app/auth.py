@@ -4,12 +4,17 @@ Referencing: @specs/features/authentication.md, @backend/CLAUDE.md
 """
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthCredentials
+from fastapi.security import HTTPBearer
+from fastapi import HTTPException
 from sqlmodel import Session, select
 from app.database import get_session
 from app.models import User
 import jwt
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 security = HTTPBearer()
 
@@ -20,7 +25,7 @@ if not BETTER_AUTH_SECRET:
     raise ValueError("BETTER_AUTH_SECRET environment variable is not set")
 
 async def get_current_user(
-    credentials: HTTPAuthCredentials = Depends(security),
+    credentials = Depends(security),
     session: Session = Depends(get_session)
 ) -> User:
     """

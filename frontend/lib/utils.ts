@@ -2,6 +2,9 @@
  * Utility functions for the application
  */
 
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
 /**
  * Format a date string as "X time ago"
  */
@@ -39,8 +42,8 @@ export function formatDistanceToNow(dateString: string): string {
 }
 
 /**
- * Combine class names
+ * Combine class names with tailwind-merge
  */
-export function cn(...classes: (string | undefined | null | false)[]): string {
-  return classes.filter(Boolean).join(' ')
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 }

@@ -5,7 +5,8 @@ import type {
   UpdateTaskData,
   TaskStatus,
   DashboardStats,
-  ApiError
+  ApiError,
+  ChatResponse
 } from '@/types'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
@@ -85,10 +86,24 @@ class ApiClient {
       })
   }
 
+  // Chat API methods
+  chat = {
+    sendMessage: (userId: string, message: string, conversationId?: number) => {
+      const requestBody: { conversation_id?: number; message: string } = { message };
+      if (conversationId) {
+        requestBody.conversation_id = conversationId;
+      }
+      return this.request<ChatResponse>(`/api/${userId}/chat`, {
+        method: 'POST',
+        body: JSON.stringify(requestBody)
+      });
+    }
+  }
+
   // Dashboard API methods
   dashboard = {
     getStats: (userId: string) =>
-      this.request<DashboardStats>(`/api/${userId}/dashboard`)
+      this.request<DashboardStats>(`/api/${userId}/dashboard/stats`)
   }
 }
 

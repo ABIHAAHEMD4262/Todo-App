@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Navigation } from '@/components/ui/navigation'
+import { SidebarLayout } from '@/components/ui/sidebar'
 import { useAuthContext } from '@/components/providers/auth-provider'
 import { TaskList } from '@/components/tasks/task-list'
 import { TaskForm } from '@/components/tasks/task-form'
 import { api } from '@/lib/api'
 import { Task, TaskStatus, TaskPriority, TaskSortBy, SortOrder } from '@/types'
 import { toast } from 'sonner'
-import { Plus, Loader2, Search, X, ArrowUpDown } from 'lucide-react'
+import { Plus, Loader2, Search, X, ArrowUpDown, Filter } from 'lucide-react'
 
 export default function TasksPage() {
   const router = useRouter()
@@ -29,6 +29,7 @@ export default function TasksPage() {
   const [tagFilter, setTagFilter] = useState('')
   const [sortBy, setSortBy] = useState<TaskSortBy>('created_at')
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -185,8 +186,8 @@ export default function TasksPage() {
 
   if (authLoading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-12 h-12 text-violet-600 animate-spin" />
       </div>
     )
   }
@@ -198,16 +199,14 @@ export default function TasksPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
-
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <SidebarLayout>
+      <main className="p-6 lg:p-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold text-slate-900 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-2">
             My Tasks
           </h1>
-          <p className="text-gray-600">
+          <p className="text-slate-600 text-lg">
             {stats.pending === 0 && stats.total > 0
               ? '🎉 All done! Great job!'
               : `${stats.pending} pending, ${stats.completed} completed`
@@ -215,131 +214,144 @@ export default function TasksPage() {
           </p>
         </div>
 
-        {/* Search Bar */}
-        <div className="mb-4">
+        {/* Search and Filters */}
+        <div className="space-y-4 mb-6">
+          {/* Search Bar */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search tasks by title or description..."
-              className="w-full pl-10 pr-10 py-3 bg-white text-gray-900 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition placeholder:text-gray-400"
+              className="w-full pl-12 pr-12 py-4 bg-white text-slate-900 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition placeholder:text-slate-400 shadow-sm"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             )}
           </div>
-        </div>
 
-        {/* Advanced Filters */}
-        <div className="mb-4 flex flex-wrap gap-3">
-          {/* Priority Filter */}
-          <select
-            value={priorityFilter}
-            onChange={(e) => setPriorityFilter(e.target.value as TaskPriority | '')}
-            className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-          >
-            <option value="">All Priorities</option>
-            <option value="high">🔴 High Priority</option>
-            <option value="medium">🟡 Medium Priority</option>
-            <option value="low">🟢 Low Priority</option>
-          </select>
-
-          {/* Tag Filter */}
-          <div className="relative flex-1 min-w-[200px]">
-            <input
-              type="text"
-              value={tagFilter}
-              onChange={(e) => setTagFilter(e.target.value)}
-              placeholder="Filter by tag..."
-              className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-            />
-            {tagFilter && (
+          {/* Status Filters and Add Button */}
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2 bg-white rounded-2xl p-1.5 shadow-sm border border-slate-200">
               <button
-                onClick={() => setTagFilter('')}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                onClick={() => setFilter('all')}
+                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                  filter === 'all'
+                    ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-md'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                }`}
               >
-                <X className="w-4 h-4" />
+                All ({stats.total})
               </button>
+              <button
+                onClick={() => setFilter('pending')}
+                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                  filter === 'pending'
+                    ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-md'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                Pending ({stats.pending})
+              </button>
+              <button
+                onClick={() => setFilter('completed')}
+                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                  filter === 'completed'
+                    ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-md'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                Completed ({stats.completed})
+              </button>
+            </div>
+
+            <button
+              onClick={() => setShowForm(true)}
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-2xl font-bold hover:from-violet-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+            >
+              <Plus className="w-5 h-5" />
+              New Task
+            </button>
+          </div>
+
+          {/* Advanced Filters */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:border-violet-300 transition-all duration-200"
+            >
+              <Filter className="w-4 h-4" />
+              Advanced Filters
+            </button>
+
+            {showAdvancedFilters && (
+              <div className="flex flex-wrap gap-3">
+                {/* Priority Filter */}
+                <select
+                  value={priorityFilter}
+                  onChange={(e) => setPriorityFilter(e.target.value as TaskPriority | '')}
+                  className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition"
+                >
+                  <option value="">All Priorities</option>
+                  <option value="high">🔴 High Priority</option>
+                  <option value="medium">🟡 Medium Priority</option>
+                  <option value="low">🟢 Low Priority</option>
+                </select>
+
+                {/* Tag Filter */}
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={tagFilter}
+                    onChange={(e) => setTagFilter(e.target.value)}
+                    placeholder="Filter by tag..."
+                    className="w-48 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition"
+                  />
+                  {tagFilter && (
+                    <button
+                      onClick={() => setTagFilter('')}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Sort Controls */}
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as TaskSortBy)}
+                  className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition"
+                >
+                  <option value="created_at">Sort by Created Date</option>
+                  <option value="title">Sort by Title</option>
+                  <option value="priority">Sort by Priority</option>
+                  <option value="due_date">Sort by Due Date</option>
+                </select>
+
+                <button
+                  onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                  className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition flex items-center gap-2"
+                  title={sortOrder === 'asc' ? 'Ascending' : 'Descending'}
+                >
+                  <ArrowUpDown className="w-4 h-4" />
+                  {sortOrder === 'asc' ? '↑ A-Z' : '↓ Z-A'}
+                </button>
+              </div>
             )}
           </div>
-
-          {/* Sort Controls */}
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as TaskSortBy)}
-            className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-          >
-            <option value="created_at">Sort by Created Date</option>
-            <option value="title">Sort by Title</option>
-            <option value="priority">Sort by Priority</option>
-            <option value="due_date">Sort by Due Date</option>
-          </select>
-
-          <button
-            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-            className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition flex items-center gap-2"
-            title={sortOrder === 'asc' ? 'Ascending' : 'Descending'}
-          >
-            <ArrowUpDown className="w-4 h-4" />
-            {sortOrder === 'asc' ? '↑ A-Z' : '↓ Z-A'}
-          </button>
-        </div>
-
-        {/* Filters and Add Button */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2 bg-white rounded-xl p-1 shadow-sm border border-gray-200">
-            <button
-              onClick={() => setFilter('all')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                filter === 'all'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              All ({stats.total})
-            </button>
-            <button
-              onClick={() => setFilter('pending')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                filter === 'pending'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Pending ({stats.pending})
-            </button>
-            <button
-              onClick={() => setFilter('completed')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                filter === 'completed'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Completed ({stats.completed})
-            </button>
-          </div>
-
-          <button
-            onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition shadow-lg hover:shadow-xl"
-          >
-            <Plus className="w-5 h-5" />
-            New Task
-          </button>
         </div>
 
         {/* Task List */}
         {loading ? (
           <div className="flex justify-center py-12">
-            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+            <Loader2 className="w-12 h-12 text-violet-600 animate-spin" />
           </div>
         ) : (
           <TaskList
@@ -365,6 +377,6 @@ export default function TasksPage() {
           isLoading={formLoading}
         />
       )}
-    </div>
+    </SidebarLayout>
   )
 }

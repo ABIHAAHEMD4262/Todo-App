@@ -56,6 +56,13 @@ export function Navigation() {
               Tasks
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
             </Link>
+            <Link
+              href="/chat"
+              className="relative text-gray-700 hover:text-blue-600 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:bg-blue-50 group"
+            >
+              Chat
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+            </Link>
 
             {/* User Menu */}
             <div className="ml-4 flex items-center space-x-3 pl-4 border-l border-gray-300">
@@ -128,6 +135,13 @@ export function Navigation() {
                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition"
               >
                 Tasks
+              </Link>
+              <Link
+                href="/chat"
+                onClick={() => setIsMenuOpen(false)}
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition"
+              >
+                Chat
               </Link>
 
               {/* Logout Button */}

@@ -69,6 +69,13 @@ export interface DashboardStats {
   recent_activity: ActivityItem[]
 }
 
+// Chat types
+export interface ChatResponse {
+  conversation_id: number
+  response: string
+  tool_calls: string[]
+}
+
 // API Error type
 export interface ApiError {
   detail: string
