@@ -22,7 +22,11 @@ security = HTTPBearer()
 BETTER_AUTH_SECRET = os.getenv("BETTER_AUTH_SECRET")
 
 if not BETTER_AUTH_SECRET:
-    raise ValueError("BETTER_AUTH_SECRET environment variable is not set")
+    print("WARNING: BETTER_AUTH_SECRET environment variable is not set. Authentication endpoints will return 500 errors.")
+    # Don't raise an exception, but mark that auth is not properly configured
+    AUTH_CONFIGURED = False
+else:
+    AUTH_CONFIGURED = True
 
 async def get_current_user(
     credentials = Depends(security),
