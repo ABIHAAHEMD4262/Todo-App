@@ -18,13 +18,28 @@ app = FastAPI(
 
 # CORS Configuration
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+HF_SPACE_URL = os.getenv("HF_SPACE_URL")  # Hugging Face Space URL
+
+cors_origins = [
+    FRONTEND_URL,
+    "http://localhost:3000",  # Local development
+    "http://localhost:7860",  # Hugging Face local
+    "https://huggingface.co",  # Hugging Face main domain
+    "https://*.huggingface.co",  # Hugging Face subdomains
+]
+
+# Add Hugging Face Space URL if available
+if HF_SPACE_URL:
+    cors_origins.append(HF_SPACE_URL)
+    # Also add the URL without protocol
+    if HF_SPACE_URL.startswith("https://"):
+        cors_origins.append(HF_SPACE_URL[8:])  # Remove https://
+    elif HF_SPACE_URL.startswith("http://"):
+        cors_origins.append(HF_SPACE_URL[7:])  # Remove http://
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        FRONTEND_URL,
-        "http://localhost:3000",  # Development
-    ],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
@@ -36,7 +51,7 @@ async def startup_event():
     """Initialize database on startup"""
     init_db()
     print("[OK] Database initialized")
-    print(f"[OK] CORS enabled for: {FRONTEND_URL}")
+    print(f"[OK] CORS enabled for: {cors_origins}")
 
 # Health check endpoint
 @app.get("/health", tags=["Health"])

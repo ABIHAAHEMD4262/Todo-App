@@ -1,0 +1,11 @@
+type: inference
+hw_type: cpu-basic
+framework: docker
+title: Todo App with AI Chatbot
+emoji: 📝
+color: blue
+compute: cpu-tiny
+---
+run: |
+  pip install -r requirements.txt
+  uvicorn app.main:app --host 0.0.0.0 --port $PORT
