@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 // This route acts as a proxy to forward API requests to the backend API
 // This helps avoid CORS issues in production deployment
-// Specifically handles non-auth API endpoints like /api/{user_id}/tasks, /api/{user_id}/dashboard, etc.
+// Handles all API endpoints EXCEPT auth routes, which are handled separately
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ all: string[] }> }
@@ -11,6 +11,14 @@ export async function GET(
     // Extract the specific API endpoint from the URL
     const { all } = await params;
     const endpoint = all?.join('/') || '';
+
+    // Skip if this looks like an auth endpoint (handled by separate route)
+    if (endpoint.startsWith('auth/')) {
+      return NextResponse.json(
+        { error: 'Auth endpoints should use /api/auth routes directly' },
+        { status: 400 }
+      );
+    }
 
     // Forward to backend API
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${endpoint}`, {
@@ -49,6 +57,14 @@ export async function POST(
     // Extract the specific API endpoint from the URL
     const { all } = await params;
     const endpoint = all?.join('/') || '';
+
+    // Skip if this looks like an auth endpoint (handled by separate route)
+    if (endpoint.startsWith('auth/')) {
+      return NextResponse.json(
+        { error: 'Auth endpoints should use /api/auth routes directly' },
+        { status: 400 }
+      );
+    }
 
     // Forward to backend API
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${endpoint}`, {
@@ -90,6 +106,14 @@ export async function PUT(
     const { all } = await params;
     const endpoint = all?.join('/') || '';
 
+    // Skip if this looks like an auth endpoint (handled by separate route)
+    if (endpoint.startsWith('auth/')) {
+      return NextResponse.json(
+        { error: 'Auth endpoints should use /api/auth routes directly' },
+        { status: 400 }
+      );
+    }
+
     // Forward to backend API
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${endpoint}`, {
       method: 'PUT',
@@ -130,6 +154,14 @@ export async function PATCH(
     const { all } = await params;
     const endpoint = all?.join('/') || '';
 
+    // Skip if this looks like an auth endpoint (handled by separate route)
+    if (endpoint.startsWith('auth/')) {
+      return NextResponse.json(
+        { error: 'Auth endpoints should use /api/auth routes directly' },
+        { status: 400 }
+      );
+    }
+
     // Forward to backend API
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${endpoint}`, {
       method: 'PATCH',
@@ -169,6 +201,14 @@ export async function DELETE(
     // Extract the specific API endpoint from the URL
     const { all } = await params;
     const endpoint = all?.join('/') || '';
+
+    // Skip if this looks like an auth endpoint (handled by separate route)
+    if (endpoint.startsWith('auth/')) {
+      return NextResponse.json(
+        { error: 'Auth endpoints should use /api/auth routes directly' },
+        { status: 400 }
+      );
+    }
 
     // Forward to backend API
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${endpoint}`, {

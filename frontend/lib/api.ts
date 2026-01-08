@@ -14,10 +14,13 @@ const getBaseUrl = (): string => {
   if (typeof window !== 'undefined') {
     // Client-side: Use relative URLs to go through Next.js proxy in production
     // This helps avoid CORS issues on Vercel deployment
-    const isLocalhost = window.location.hostname === 'localhost' ||
-                      window.location.hostname === '127.0.0.1';
+    const hostname = window.location.hostname;
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+    const isLocalNetwork = /^192\.168\./.test(hostname) || /^10\./.test(hostname) || /^172\.(1[6-9]|2[0-9]|3[01])\./.test(hostname);
 
-    if (isLocalhost) {
+    // Use direct API calls for localhost and local network (for development)
+    // Use relative paths (proxy routes) for production deployments
+    if (isLocalhost || isLocalNetwork) {
       return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
     } else {
       // In production (Vercel), use relative paths to go through Next.js API routes
@@ -39,6 +42,11 @@ class ApiClient {
     // Use proxy route in production, direct API in development
     const baseUrl = getBaseUrl();
     const url = baseUrl ? `${baseUrl}${endpoint}` : endpoint;
+
+    // For debugging - log the URL being called
+    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+      console.log(`API call to: ${url}`);
+    }
 
     const response = await fetch(url, {
       ...options,
