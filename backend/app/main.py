@@ -19,6 +19,7 @@ app = FastAPI(
 # CORS Configuration
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 HF_SPACE_URL = os.getenv("HF_SPACE_URL")  # Hugging Face Space URL
+VERCEL_URL = os.getenv("VERCEL_URL", "")  # Vercel deployment URL
 
 cors_origins = [
     FRONTEND_URL,
@@ -27,6 +28,24 @@ cors_origins = [
     "https://huggingface.co",  # Hugging Face main domain
     "https://*.huggingface.co",  # Hugging Face subdomains
 ]
+
+# Add Vercel deployment URL if available
+if VERCEL_URL:
+    cors_origins.append(VERCEL_URL)
+    # Also add with and without www
+    if VERCEL_URL.startswith("https://"):
+        base_domain = VERCEL_URL[8:]  # Remove https://
+    elif VERCEL_URL.startswith("http://"):
+        base_domain = VERCEL_URL[7:]  # Remove http://
+    else:
+        base_domain = VERCEL_URL
+
+    if not base_domain.startswith("www.") and f"https://www.{base_domain}" not in cors_origins:
+        cors_origins.append(f"https://www.{base_domain}")
+    elif base_domain.startswith("www."):
+        non_www = base_domain[4:]  # Remove www.
+        if f"https://{non_www}" not in cors_origins:
+            cors_origins.append(f"https://{non_www}")
 
 # Add Hugging Face Space URL if available
 if HF_SPACE_URL:

@@ -55,8 +55,8 @@ export function useAuth(): UseAuthReturn {
       setLoading(true)
       setError(null)
 
-      // Call our auth endpoint (goes through Next.js proxy to backend)
-      const response = await fetch('/api/auth/login', {
+      // Call our backend auth endpoint directly
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ export function useAuth(): UseAuthReturn {
       setLoading(true)
       setError(null)
 
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
