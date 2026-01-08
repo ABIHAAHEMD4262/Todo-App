@@ -5,11 +5,12 @@ import { NextResponse } from 'next/server'
 // Specifically handles non-auth API endpoints like /api/{user_id}/tasks, /api/{user_id}/dashboard, etc.
 export async function GET(
   request: Request,
-  { params }: { params: { all: string[] } }
+  { params }: { params: Promise<{ all: string[] }> }
 ) {
   try {
     // Extract the specific API endpoint from the URL
-    const endpoint = params.all?.join('/') || '';
+    const { all } = await params;
+    const endpoint = all?.join('/') || '';
 
     // Forward to backend API
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${endpoint}`, {
@@ -42,11 +43,12 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: { all: string[] } }
+  { params }: { params: Promise<{ all: string[] }> }
 ) {
   try {
     // Extract the specific API endpoint from the URL
-    const endpoint = params.all?.join('/') || '';
+    const { all } = await params;
+    const endpoint = all?.join('/') || '';
 
     // Forward to backend API
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${endpoint}`, {
@@ -81,11 +83,12 @@ export async function POST(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { all: string[] } }
+  { params }: { params: Promise<{ all: string[] }> }
 ) {
   try {
     // Extract the specific API endpoint from the URL
-    const endpoint = params.all?.join('/') || '';
+    const { all } = await params;
+    const endpoint = all?.join('/') || '';
 
     // Forward to backend API
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${endpoint}`, {
@@ -120,11 +123,12 @@ export async function PUT(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { all: string[] } }
+  { params }: { params: Promise<{ all: string[] }> }
 ) {
   try {
     // Extract the specific API endpoint from the URL
-    const endpoint = params.all?.join('/') || '';
+    const { all } = await params;
+    const endpoint = all?.join('/') || '';
 
     // Forward to backend API
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${endpoint}`, {
@@ -159,11 +163,12 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { all: string[] } }
+  { params }: { params: Promise<{ all: string[] }> }
 ) {
   try {
     // Extract the specific API endpoint from the URL
-    const endpoint = params.all?.join('/') || '';
+    const { all } = await params;
+    const endpoint = all?.join('/') || '';
 
     // Forward to backend API
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${endpoint}`, {

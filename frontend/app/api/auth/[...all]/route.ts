@@ -4,11 +4,12 @@ import { NextResponse } from 'next/server'
 // This helps avoid CORS issues in production deployment
 export async function GET(
   request: Request,
-  { params }: { params: { all: string[] } }
+  { params }: { params: Promise<{ all: string[] }> }
 ) {
   try {
     // Extract the specific auth endpoint from the URL
-    const endpoint = params.all?.join('/') || '';
+    const { all } = await params;
+    const endpoint = all?.join('/') || '';
 
     // Forward to backend auth
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/${endpoint}`, {
@@ -32,11 +33,12 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: { all: string[] } }
+  { params }: { params: Promise<{ all: string[] }> }
 ) {
   try {
     // Extract the specific auth endpoint from the URL
-    const endpoint = params.all?.join('/') || '';
+    const { all } = await params;
+    const endpoint = all?.join('/') || '';
 
     // Forward to backend auth
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/${endpoint}`, {
