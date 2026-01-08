@@ -1,17 +1,24 @@
 import { NextResponse } from 'next/server'
 
-// This is a placeholder auth route
-// The actual authentication is handled by the backend API
-export async function GET(request: Request) {
+// This route acts as a proxy to forward auth requests to the backend API
+// This helps avoid CORS issues in production deployment
+export async function GET(
+  request: Request,
+  { params }: { params: { all: string[] } }
+) {
   try {
+    // Extract the specific auth endpoint from the URL
+    const endpoint = params.all?.join('/') || '';
+
     // Forward to backend auth
-    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth`, {
+    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/${endpoint}`, {
       method: 'GET',
       headers: {
         ...request.headers,
       },
     });
 
+    // Return the backend response directly to preserve all headers and status codes
     const data = await backendResponse.json();
     return NextResponse.json(data, { status: backendResponse.status });
   } catch (error) {
@@ -23,10 +30,16 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request,
+  { params }: { params: { all: string[] } }
+) {
   try {
+    // Extract the specific auth endpoint from the URL
+    const endpoint = params.all?.join('/') || '';
+
     // Forward to backend auth
-    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth`, {
+    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/${endpoint}`, {
       method: 'POST',
       headers: {
         ...request.headers,
@@ -35,6 +48,7 @@ export async function POST(request: Request) {
       body: await request.json(),
     });
 
+    // Return the backend response directly to preserve all headers and status codes
     const data = await backendResponse.json();
     return NextResponse.json(data, { status: backendResponse.status });
   } catch (error) {

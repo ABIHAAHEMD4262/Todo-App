@@ -9,7 +9,24 @@ import type {
   ChatResponse
 } from '@/types'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+// Determine base URL based on environment - use proxy routes in production
+const getBaseUrl = (): string => {
+  if (typeof window !== 'undefined') {
+    // Client-side: Use relative URLs to go through Next.js proxy in production
+    // This helps avoid CORS issues on Vercel deployment
+    const isLocalhost = window.location.hostname === 'localhost' ||
+                      window.location.hostname === '127.0.0.1';
+
+    if (isLocalhost) {
+      return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    } else {
+      // In production (Vercel), use relative paths to go through Next.js API routes
+      return '';
+    }
+  }
+  // Server-side: fallback to environment variable
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+};
 
 class ApiClient {
   private async request<T>(
@@ -19,7 +36,11 @@ class ApiClient {
     // Get token from localStorage (client-side only)
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
 
-    const response = await fetch(`${API_URL}${endpoint}`, {
+    // Use proxy route in production, direct API in development
+    const baseUrl = getBaseUrl();
+    const url = baseUrl ? `${baseUrl}${endpoint}` : endpoint;
+
+    const response = await fetch(url, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
