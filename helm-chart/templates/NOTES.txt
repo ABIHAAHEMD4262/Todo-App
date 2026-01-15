@@ -1,0 +1,77 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║                   Todo App Successfully Deployed! 🎉                      ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+Release Name: {{ .Release.Name }}
+Namespace: {{ .Values.global.namespace }}
+Environment: {{ .Values.config.environment }}
+
+{{- if .Values.frontend.enabled }}
+
+📦 Frontend:
+   Service: {{ include "todo-app.fullname" . }}-{{ .Values.frontend.name }}
+   Port: {{ .Values.frontend.service.port }}
+   Replicas: {{ .Values.frontend.replicaCount }}
+   {{- if .Values.frontend.autoscaling.enabled }}
+   Autoscaling: {{ .Values.frontend.autoscaling.minReplicas }}-{{ .Values.frontend.autoscaling.maxReplicas }} replicas
+   {{- end }}
+{{- end }}
+
+{{- if .Values.backend.enabled }}
+
+📦 Backend:
+   Service: {{ include "todo-app.fullname" . }}-{{ .Values.backend.name }}
+   Port: {{ .Values.backend.service.port }}
+   Replicas: {{ .Values.backend.replicaCount }}
+   {{- if .Values.backend.autoscaling.enabled }}
+   Autoscaling: {{ .Values.backend.autoscaling.minReplicas }}-{{ .Values.backend.autoscaling.maxReplicas }} replicas
+   {{- end }}
+{{- end }}
+
+{{- if .Values.ingress.enabled }}
+
+🌐 Ingress:
+   {{- range .Values.ingress.hosts }}
+   Host: {{ .host }}
+   {{- end }}
+
+   To access the application:
+   {{- range .Values.ingress.hosts }}
+   1. Add to /etc/hosts: <ingress-ip> {{ .host }}
+   2. Visit: http://{{ .host }}
+   {{- end }}
+
+   Get Ingress IP:
+   kubectl get ingress -n {{ .Values.global.namespace }}
+{{- end }}
+
+📊 Check deployment status:
+   kubectl get all -n {{ .Values.global.namespace }}
+
+🔍 View pod logs:
+   kubectl logs -f <pod-name> -n {{ .Values.global.namespace }}
+
+📈 Check autoscaling:
+   kubectl get hpa -n {{ .Values.global.namespace }}
+
+🔧 Port forward for testing:
+   Frontend: kubectl port-forward -n {{ .Values.global.namespace }} svc/{{ include "todo-app.fullname" . }}-{{ .Values.frontend.name }} {{ .Values.frontend.service.port }}:{{ .Values.frontend.service.port }}
+   Backend:  kubectl port-forward -n {{ .Values.global.namespace }} svc/{{ include "todo-app.fullname" . }}-{{ .Values.backend.name }} {{ .Values.backend.service.port }}:{{ .Values.backend.service.port }}
+
+⚠️  IMPORTANT: Make sure you've set the secrets:
+   - DATABASE_URL
+   - BETTER_AUTH_SECRET
+   - OPENAI_API_KEY
+
+   If not set during install, update with:
+   helm upgrade {{ .Release.Name }} ./helm-chart \
+     --set secrets.databaseUrl="postgresql://..." \
+     --set secrets.betterAuthSecret="..." \
+     --set secrets.openaiApiKey="..."
+
+📚 For more information:
+   - Chart README: helm-chart/README.md
+   - Kubernetes manifests: k8s/README.md
+   - Project docs: README.md
+
+Happy tasking! ✨

@@ -1,0 +1,43 @@
+# Staging environment overrides
+
+global:
+  namespace: todo-app-staging
+
+imageTag: v1.0.0
+
+frontend:
+  replicaCount: 2
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+
+backend:
+  replicaCount: 2
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+
+ingress:
+  hosts:
+    - host: todo-staging.example.com
+      paths:
+        - path: /api
+          pathType: Prefix
+          backend: backend
+        - path: /
+          pathType: Prefix
+          backend: frontend
+  tls:
+    - secretName: todo-staging-tls
+      hosts:
+        - todo-staging.example.com
+
+config:
+  environment: staging
+  logLevel: info
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1

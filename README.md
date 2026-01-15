@@ -1,21 +1,116 @@
 # Todo App - Hackathon II Evolution
 
-**Hackathon II Submission** | **Current Phase**: II - Full-Stack Web Application | **Status**: ✅ **Complete**
+**Hackathon II Submission** | **Current Phase**: IV - Kubernetes Deployment | **Status**: ✅ **Complete**
 
 Evolution of a todo application from console app to cloud-native AI chatbot:
 - ✅ **Phase I**: Console Application (Complete)
 - ✅ **Phase II**: Full-Stack Web Application (Complete)
-- 🚧 **Phase III**: AI Chatbot with MCP (In Progress)
-- 📋 **Phase IV**: Kubernetes Deployment
+- ✅ **Phase III**: AI Chatbot with MCP (Complete)
+- ✅ **Phase IV**: Kubernetes Deployment (Complete)
 - 📋 **Phase V**: Cloud + Event-Driven Architecture
 
 ---
 
-## 🎯 Phase II - Complete & Functional
+## 🎯 Phase IV - Kubernetes Deployment (Current)
 
-**Submission Date:** January 6, 2026
-**Status:** Ready for submission
-**Spec-Driven Development:** ✅ Full compliance
+**Completion Date:** January 15, 2026
+**Status:** ✅ Complete
+**Deployment:** Local Minikube Cluster
+
+### Quick Start - Kubernetes
+
+```bash
+# Prerequisites
+# - Docker Desktop running
+# - Minikube installed
+# - kubectl installed
+# - Helm 3+ installed
+
+# Start Minikube
+minikube start --driver=docker --cpus=4 --memory=7500
+
+# Enable addons
+minikube addons enable ingress
+minikube addons enable metrics-server
+
+# Deploy using Helm
+helm install todo-app ./helm-chart -n todo-app --create-namespace
+
+# Access the application
+kubectl port-forward deployment/todo-frontend -n todo-app 3000:3000
+kubectl port-forward deployment/todo-backend -n todo-app 8000:8000
+
+# Open in browser
+# Frontend: http://localhost:3000
+# Backend API: http://localhost:8000/docs
+```
+
+### Phase IV Features
+
+✅ **Docker Containerization**:
+- Multi-stage builds for optimized images
+- Frontend: ~127MB (Next.js standalone)
+- Backend: ~89MB (Python Alpine)
+- Non-root users for security
+- Health check endpoints
+
+✅ **Kubernetes Resources**:
+- Deployments with multiple replicas
+- Services for internal communication
+- ConfigMaps for configuration
+- Secrets for sensitive data
+- Horizontal Pod Autoscaler (HPA)
+
+✅ **Helm Chart**:
+- Parameterized deployments
+- Environment-specific values files
+- Easy upgrades and rollbacks
+
+✅ **Cloud-Native Patterns**:
+- 12-Factor App compliance
+- Stateless application design
+- External database (Neon PostgreSQL)
+- Graceful shutdown handling
+
+### Architecture (Phase IV)
+
+```
+┌─────────────────────────────────────────────────┐
+│              Minikube Cluster                    │
+│                                                  │
+│  ┌──────────────────────────────────────────┐  │
+│  │           Kubernetes Services             │  │
+│  │                                           │  │
+│  │  ┌─────────────┐    ┌─────────────┐     │  │
+│  │  │  Frontend   │    │   Backend   │     │  │
+│  │  │   Service   │    │   Service   │     │  │
+│  │  │  (ClusterIP)│    │  (ClusterIP)│     │  │
+│  │  └──────┬──────┘    └──────┬──────┘     │  │
+│  │         │                   │            │  │
+│  │  ┌──────▼──────┐    ┌──────▼──────┐     │  │
+│  │  │  Frontend   │    │   Backend   │     │  │
+│  │  │    Pods     │    │    Pods     │     │  │
+│  │  │  (2 replicas)│   │ (2 replicas)│     │  │
+│  │  └─────────────┘    └──────┬──────┘     │  │
+│  └────────────────────────────┼─────────────┘  │
+└───────────────────────────────┼─────────────────┘
+                                │
+                    ┌───────────▼───────────┐
+                    │    Neon PostgreSQL    │
+                    │   (External Database) │
+                    └───────────────────────┘
+```
+
+---
+
+## Phase III: AI Chatbot with MCP (Complete)
+
+**Features:**
+- Natural language task management
+- OpenAI ChatKit integration
+- Agents SDK for AI operations
+- MCP (Model Context Protocol) server
+- Conversation history persistence
 
 ---
 
@@ -306,7 +401,7 @@ MIT License - Hackathon II Submission
 
 ---
 
-**Version**: 1.0.0 (Phase I)
+**Version**: 4.0.0 (Phase IV - Kubernetes)
 **Created**: 2025-12-26
-**Completed**: 2025-12-28
-**Status**: ✅ Ready for submission
+**Phase IV Completed**: 2026-01-15
+**Status**: ✅ Phase IV Complete - Kubernetes Deployment

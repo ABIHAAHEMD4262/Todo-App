@@ -1,0 +1,49 @@
+# Development environment overrides
+
+global:
+  namespace: todo-app-dev
+
+imageTag: latest
+
+frontend:
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "250m"
+
+backend:
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+ingress:
+  hosts:
+    - host: todo-dev.local
+      paths:
+        - path: /api
+          pathType: Prefix
+          backend: backend
+        - path: /
+          pathType: Prefix
+          backend: frontend
+  tls: []
+
+config:
+  environment: development
+  logLevel: debug
+
+podDisruptionBudget:
+  enabled: false
