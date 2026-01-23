@@ -4,9 +4,14 @@ import type {
   CreateTaskData,
   UpdateTaskData,
   TaskStatus,
+  TaskFilterParams,
   DashboardStats,
   ApiError,
-  ChatResponse
+  ChatResponse,
+  Tag,
+  TagListResponse,
+  CreateTagData,
+  UpdateTagData
 } from '@/types'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
@@ -58,10 +63,24 @@ class ApiClient {
     return response.json()
   }
 
-  // Task API methods
+  // Task API methods - Phase 5 Enhanced
   tasks = {
-    list: (userId: string, status?: TaskStatus) =>
-      this.request<TaskListResponse>(`/api/${userId}/tasks?status=${status || 'all'}`),
+    list: (userId: string, params?: TaskFilterParams) => {
+      const searchParams = new URLSearchParams()
+      if (params?.status) searchParams.append('status', params.status)
+      if (params?.priority) searchParams.append('priority', params.priority)
+      if (params?.tag_ids) searchParams.append('tag_ids', params.tag_ids)
+      if (params?.due_from) searchParams.append('due_from', params.due_from)
+      if (params?.due_to) searchParams.append('due_to', params.due_to)
+      if (params?.search) searchParams.append('search', params.search)
+      if (params?.sort_by) searchParams.append('sort_by', params.sort_by)
+      if (params?.sort_order) searchParams.append('sort_order', params.sort_order)
+      const queryString = searchParams.toString()
+      return this.request<TaskListResponse>(`/api/${userId}/tasks${queryString ? `?${queryString}` : ''}`)
+    },
+
+    search: (userId: string, query: string) =>
+      this.request<TaskListResponse>(`/api/${userId}/tasks/search?q=${encodeURIComponent(query)}`),
 
     create: (userId: string, data: CreateTaskData) =>
       this.request<Task>(`/api/${userId}/tasks`, {
@@ -83,6 +102,32 @@ class ApiClient {
     toggleComplete: (userId: string, taskId: number) =>
       this.request<Task>(`/api/${userId}/tasks/${taskId}/complete`, {
         method: 'PATCH'
+      })
+  }
+
+  // Tags API methods - Phase 5
+  tags = {
+    list: (userId: string) =>
+      this.request<TagListResponse>(`/api/${userId}/tags`),
+
+    get: (userId: string, tagId: number) =>
+      this.request<Tag>(`/api/${userId}/tags/${tagId}`),
+
+    create: (userId: string, data: CreateTagData) =>
+      this.request<Tag>(`/api/${userId}/tags`, {
+        method: 'POST',
+        body: JSON.stringify(data)
+      }),
+
+    update: (userId: string, tagId: number, data: UpdateTagData) =>
+      this.request<Tag>(`/api/${userId}/tags/${tagId}`, {
+        method: 'PUT',
+        body: JSON.stringify(data)
+      }),
+
+    delete: (userId: string, tagId: number) =>
+      this.request<void>(`/api/${userId}/tags/${tagId}`, {
+        method: 'DELETE'
       })
   }
 

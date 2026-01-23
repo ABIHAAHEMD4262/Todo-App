@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import type { TaskPriority, TaskRecurrence } from '@/types'
 
-// Priority Selector Component (Feature #6)
+// Priority Selector Component - Phase 5 Enhanced
 interface PrioritySelectorProps {
   value?: TaskPriority
   onChange: (priority: TaskPriority) => void
@@ -11,19 +11,18 @@ interface PrioritySelectorProps {
   disabled?: boolean
 }
 
-export function PrioritySelector({ value = 'medium', onChange, className = '', disabled = false }: PrioritySelectorProps) {
+export function PrioritySelector({ value = 'none', onChange, className = '', disabled = false }: PrioritySelectorProps) {
   const priorities: { value: TaskPriority; label: string; icon: string; color: string }[] = [
-    { value: 'high', label: 'High', icon: '🔴', color: 'bg-red-100 text-red-800 border-red-300' },
-    { value: 'medium', label: 'Medium', icon: '🟡', color: 'bg-yellow-100 text-yellow-800 border-yellow-300' },
-    { value: 'low', label: 'Low', icon: '🟢', color: 'bg-green-100 text-green-800 border-green-300' }
+    { value: 'urgent', label: 'Urgent', icon: '🔥', color: 'bg-purple-900/40 text-purple-300 border-purple-500/50' },
+    { value: 'high', label: 'High', icon: '🔴', color: 'bg-red-900/40 text-red-300 border-red-500/50' },
+    { value: 'medium', label: 'Medium', icon: '🟡', color: 'bg-yellow-900/40 text-yellow-300 border-yellow-500/50' },
+    { value: 'low', label: 'Low', icon: '🟢', color: 'bg-green-900/40 text-green-300 border-green-500/50' },
+    { value: 'none', label: 'None', icon: '⚪', color: 'bg-slate-800/40 text-slate-400 border-slate-600' }
   ]
 
   return (
     <div className={`space-y-2 ${className}`}>
-      <label className="block text-sm font-medium text-gray-700">
-        Priority
-      </label>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {priorities.map((priority) => (
           <button
             key={priority.value}
@@ -31,11 +30,11 @@ export function PrioritySelector({ value = 'medium', onChange, className = '', d
             onClick={() => onChange(priority.value)}
             disabled={disabled}
             className={`
-              flex-1 px-4 py-2 rounded-lg border-2 font-medium text-sm
+              px-3 py-1.5 rounded-lg border-2 font-medium text-sm
               transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
               ${value === priority.value
-                ? `${priority.color} ring-2 ring-offset-2 ring-gray-400`
-                : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400'
+                ? `${priority.color} ring-2 ring-offset-1 ring-offset-slate-900 ring-indigo-500/50`
+                : 'bg-slate-800/40 text-slate-500 border-slate-700 hover:border-slate-500'
               }
             `}
           >
@@ -162,24 +161,21 @@ export function DueDatePicker({ value, onChange, className = '', disabled = fals
 
   return (
     <div className={`space-y-2 ${className}`}>
-      <label className="block text-sm font-medium text-gray-700">
-        Due Date
-      </label>
       <div className="relative">
         <input
           type="datetime-local"
           value={getLocalDateTimeValue()}
           onChange={handleChange}
           disabled={disabled}
-          className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 text-sm bg-white text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{ colorScheme: 'light' }}
+          className="w-full px-4 py-2 border-2 border-slate-700 rounded-xl focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/30 text-sm bg-slate-800/60 text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ colorScheme: 'dark' }}
         />
         {value && (
           <button
             type="button"
             onClick={clearDate}
             disabled={disabled}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xl font-bold disabled:cursor-not-allowed"
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-red-400 text-xl font-bold disabled:cursor-not-allowed"
             title="Clear date"
           >
             ×
@@ -190,7 +186,7 @@ export function DueDatePicker({ value, onChange, className = '', disabled = fals
   )
 }
 
-// Recurrence Selector Component (Feature #11)
+// Recurrence Selector Component - Phase 5 Enhanced
 interface RecurrenceSelectorProps {
   value?: TaskRecurrence
   onChange: (recurrence: TaskRecurrence) => void
@@ -198,24 +194,28 @@ interface RecurrenceSelectorProps {
   disabled?: boolean
 }
 
-export function RecurrenceSelector({ value = 'none', onChange, className = '', disabled = false }: RecurrenceSelectorProps) {
+export function RecurrenceSelector({
+  value = 'none',
+  onChange,
+  className = '',
+  disabled = false
+}: RecurrenceSelectorProps) {
   const options: { value: TaskRecurrence; label: string; icon: string }[] = [
     { value: 'none', label: 'None', icon: '🚫' },
     { value: 'daily', label: 'Daily', icon: '📅' },
     { value: 'weekly', label: 'Weekly', icon: '📆' },
-    { value: 'monthly', label: 'Monthly', icon: '🗓️' }
+    { value: 'monthly', label: 'Monthly', icon: '🗓️' },
+    { value: 'yearly', label: 'Yearly', icon: '🎂' },
+    { value: 'custom', label: 'Custom (days)', icon: '⚙️' }
   ]
 
   return (
     <div className={`space-y-2 ${className}`}>
-      <label className="block text-sm font-medium text-gray-700">
-        Recurrence
-      </label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as TaskRecurrence)}
         disabled={disabled}
-        className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 text-sm bg-white text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full px-4 py-2 border-2 border-slate-700 rounded-xl focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/30 text-sm bg-slate-800/60 text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -224,7 +224,7 @@ export function RecurrenceSelector({ value = 'none', onChange, className = '', d
         ))}
       </select>
       {value !== 'none' && (
-        <p className="text-xs text-blue-600">
+        <p className="text-xs text-indigo-400">
           When completed, a new task will be created automatically
         </p>
       )}

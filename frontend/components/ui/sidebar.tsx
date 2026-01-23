@@ -13,7 +13,8 @@ import {
   X,
   Home,
   User,
-  Settings
+  Settings,
+  Tag
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -45,6 +46,11 @@ export function Sidebar({ isMobileOpen: externalMobileOpen, setIsMobileOpen: ext
       name: 'Tasks',
       href: '/tasks',
       icon: <CheckSquare className="w-5 h-5" />
+    },
+    {
+      name: 'Tags',
+      href: '/tags',
+      icon: <Tag className="w-5 h-5" />
     },
     {
       name: 'AI Chat',
@@ -192,24 +198,24 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-[#0a0e1a] bg-grid">
       <Sidebar isMobileOpen={isSidebarOpen} setIsMobileOpen={setIsSidebarOpen} />
 
       {/* Main Content */}
       <div className="flex-1 lg:ml-72 transition-all duration-300">
         {/* Mobile Header */}
-        <header className="lg:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center gap-3 sticky top-0 z-30">
+        <header className="lg:hidden bg-slate-900/90 backdrop-blur-md border-b border-indigo-500/10 px-4 py-3 flex items-center gap-3 sticky top-0 z-30">
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="p-2 -ml-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition"
+            className="p-2 -ml-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
           >
             <Menu className="w-6 h-6" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center ai-glow">
               <CheckSquare className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-slate-900">Taskly</span>
+            <span className="text-xl font-bold ai-gradient-text">Taskly AI</span>
           </div>
         </header>
 

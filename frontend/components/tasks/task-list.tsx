@@ -9,7 +9,7 @@ interface TaskListProps {
   onToggleComplete: (taskId: number) => void
   onEdit: (task: Task) => void
   onDelete: (taskId: number) => void
-  filter: 'all' | 'pending' | 'completed'
+  filter: 'all' | 'pending' | 'completed' | 'overdue'
   togglingTaskId?: number | null
 }
 
@@ -17,23 +17,23 @@ export function TaskList({ tasks, onToggleComplete, onEdit, onDelete, filter, to
   if (tasks.length === 0) {
     return (
       <div className="text-center py-16">
-        <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-4">
+        <div className="inline-flex items-center justify-center w-20 h-20 bg-slate-800/60 rounded-full mb-4 ai-border-glow">
           {filter === 'completed' ? (
-            <CheckCircle2 className="w-10 h-10 text-gray-400" />
+            <CheckCircle2 className="w-10 h-10 text-indigo-400" />
           ) : filter === 'pending' ? (
-            <Circle className="w-10 h-10 text-gray-400" />
+            <Circle className="w-10 h-10 text-indigo-400" />
           ) : (
-            <Inbox className="w-10 h-10 text-gray-400" />
+            <Inbox className="w-10 h-10 text-indigo-400" />
           )}
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+        <h3 className="text-lg font-semibold text-slate-200 mb-2">
           {filter === 'completed' ? 'No completed tasks' :
            filter === 'pending' ? 'No pending tasks' :
            'No tasks yet'}
         </h3>
-        <p className="text-gray-600 max-w-md mx-auto">
+        <p className="text-slate-500 max-w-md mx-auto">
           {filter === 'all' && "Start by creating your first task to get organized!"}
-          {filter === 'pending' && "All tasks are completed! Great job! 🎉"}
+          {filter === 'pending' && "All tasks are completed! Great job!"}
           {filter === 'completed' && "Complete some tasks to see them here."}
         </p>
       </div>

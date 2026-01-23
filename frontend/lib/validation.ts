@@ -17,14 +17,22 @@ export const loginSchema = z.object({
 
 export type LoginFormData = z.infer<typeof loginSchema>
 
-// Task validation schemas
+// Task validation schemas - Phase 5 Enhanced
 export const taskSchema = z.object({
   title: z.string().min(1, "Title is required").max(200, "Title must be less than 200 characters").trim(),
   description: z.string().max(1000, "Description must be less than 1000 characters").trim().optional(),
-  priority: z.enum(['low', 'medium', 'high']).default('medium'),
-  tags: z.array(z.string().max(20)).max(10).default([]),
+  // Phase 5: Enhanced priority
+  priority: z.enum(['none', 'low', 'medium', 'high', 'urgent']).default('none'),
+  // Phase 5: Due date and reminder
   due_date: z.string().optional(),
-  recurrence: z.enum(['none', 'daily', 'weekly', 'monthly']).default('none')
+  reminder_minutes: z.number().min(0).optional(),
+  // Phase 5: Recurring tasks
+  is_recurring: z.boolean().default(false),
+  recurrence_pattern: z.enum(['none', 'daily', 'weekly', 'monthly', 'yearly', 'custom']).default('none'),
+  recurrence_interval: z.number().min(1).optional(),
+  recurrence_end_date: z.string().optional(),
+  // Phase 5: Tags (tag IDs)
+  tag_ids: z.array(z.number()).max(10).default([])
 })
 
 export type TaskFormData = z.infer<typeof taskSchema>
@@ -33,10 +41,22 @@ export const updateTaskSchema = z.object({
   title: z.string().min(1).max(200).trim().optional(),
   description: z.string().max(1000).trim().optional(),
   completed: z.boolean().optional(),
-  priority: z.enum(['low', 'medium', 'high']).optional(),
-  tags: z.array(z.string().max(20)).max(10).optional(),
+  priority: z.enum(['none', 'low', 'medium', 'high', 'urgent']).optional(),
   due_date: z.string().optional(),
-  recurrence: z.enum(['none', 'daily', 'weekly', 'monthly']).optional()
+  reminder_minutes: z.number().min(0).optional(),
+  is_recurring: z.boolean().optional(),
+  recurrence_pattern: z.enum(['none', 'daily', 'weekly', 'monthly', 'yearly', 'custom']).optional(),
+  recurrence_interval: z.number().min(1).optional(),
+  recurrence_end_date: z.string().optional(),
+  tag_ids: z.array(z.number()).max(10).optional()
 })
 
 export type UpdateTaskFormData = z.infer<typeof updateTaskSchema>
+
+// Tag validation schemas - Phase 5
+export const tagSchema = z.object({
+  name: z.string().min(1, "Tag name is required").max(50, "Tag name must be less than 50 characters").trim(),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid color format (use #RRGGBB)").default('#808080')
+})
+
+export type TagFormData = z.infer<typeof tagSchema>

@@ -1,11 +1,28 @@
 """
-SQLModel Database Models - Todo App Phase III
-Referencing: @specs/database/schema.md
+SQLModel Database Models - Todo App Phase V
+Referencing: @specs/phase5-advanced-cloud/spec.md
 """
 
 from sqlmodel import SQLModel, Field, Relationship
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from datetime import datetime
+from enum import Enum
+
+# Enums for Phase 5 features
+class Priority(str, Enum):
+    NONE = "none"
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    URGENT = "urgent"
+
+class RecurrencePattern(str, Enum):
+    NONE = "none"
+    DAILY = "daily"
+    WEEKLY = "weekly"
+    MONTHLY = "monthly"
+    YEARLY = "yearly"
+    CUSTOM = "custom"
 
 class User(SQLModel, table=True):
     """
@@ -34,11 +51,17 @@ class User(SQLModel, table=True):
 
 class Task(SQLModel, table=True):
     """
-    Task model
+    Task model - Phase V Enhanced
 
     Table: tasks
-    Indexes: user_id, completed, (user_id, completed) composite
+    Indexes: user_id, completed, priority, due_date
     Foreign Key: user_id -> users.id (CASCADE DELETE)
+
+    Phase 5 Features:
+    - Due dates and reminders
+    - Priorities (none, low, medium, high, urgent)
+    - Recurring tasks (daily, weekly, monthly, yearly, custom)
+    - Tags (via TaskTag junction table)
     """
     __tablename__ = "tasks"
 
@@ -50,8 +73,25 @@ class Task(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
+    # Phase 5: Due Dates & Reminders
+    due_date: Optional[datetime] = Field(default=None, index=True)
+    reminder_minutes: Optional[int] = Field(default=None)  # minutes before due_date
+
+    # Phase 5: Priority
+    priority: str = Field(default="none", index=True)  # none, low, medium, high, urgent
+
+    # Phase 5: Recurring Tasks
+    is_recurring: bool = Field(default=False)
+    recurrence_pattern: Optional[str] = Field(default=None)  # daily, weekly, monthly, yearly, custom
+    recurrence_interval: Optional[int] = Field(default=None)  # for custom: every N days/weeks
+    recurrence_end_date: Optional[datetime] = Field(default=None)
+    parent_task_id: Optional[int] = Field(default=None, foreign_key="tasks.id")
+
     # Relationship: Many tasks belong to one user
     user: User = Relationship(back_populates="tasks")
+
+    # Relationship: Many-to-many with tags
+    task_tags: list["TaskTag"] = Relationship(back_populates="task", cascade_delete=True)
 
 class Conversation(SQLModel, table=True):
     """
@@ -94,3 +134,65 @@ class Message(SQLModel, table=True):
 
     # Relationship: Many messages belong to one conversation
     conversation: Conversation = Relationship(back_populates="messages")
+
+
+# ============================================================================
+# Phase 5: Tags Feature
+# ============================================================================
+
+class Tag(SQLModel, table=True):
+    """
+    Tag model for categorizing tasks
+
+    Table: tags
+    Indexes: user_id, (user_id, name) unique
+    Foreign Key: user_id -> users.id (CASCADE DELETE)
+    """
+    __tablename__ = "tags"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: str = Field(foreign_key="users.id", index=True)
+    name: str = Field(max_length=50)
+    color: str = Field(default="#808080", max_length=20)  # Hex color code
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+    # Relationship: Many-to-many with tasks
+    task_tags: list["TaskTag"] = Relationship(back_populates="tag", cascade_delete=True)
+
+
+class TaskTag(SQLModel, table=True):
+    """
+    Junction table for Task-Tag many-to-many relationship
+
+    Table: task_tags
+    Primary Key: (task_id, tag_id)
+    """
+    __tablename__ = "task_tags"
+
+    task_id: int = Field(foreign_key="tasks.id", primary_key=True)
+    tag_id: int = Field(foreign_key="tags.id", primary_key=True)
+
+    # Relationships
+    task: Task = Relationship(back_populates="task_tags")
+    tag: Tag = Relationship(back_populates="task_tags")
+
+
+# ============================================================================
+# Phase 5: Reminders (for Notification Service)
+# ============================================================================
+
+class Reminder(SQLModel, table=True):
+    """
+    Reminder model for scheduled notifications
+
+    Table: reminders
+    Indexes: user_id, task_id, remind_at, sent
+    """
+    __tablename__ = "reminders"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: str = Field(foreign_key="users.id", index=True)
+    task_id: int = Field(foreign_key="tasks.id", index=True)
+    remind_at: datetime = Field(index=True)
+    sent: bool = Field(default=False, index=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
