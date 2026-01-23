@@ -23,7 +23,7 @@ phases:
     status: pending
   - name: phase4-kubernetes
     features: [task-crud, authentication, chatbot, deployment]
-    status: pending
+    status: in-progress
   - name: phase5-cloud
     features: [task-crud, authentication, chatbot, deployment, kafka, dapr]
     status: pending

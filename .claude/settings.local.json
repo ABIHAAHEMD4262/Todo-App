@@ -22,7 +22,11 @@
       "Bash(git push origin master)",
       "Bash(git commit -m \"Configure backend for Hugging Face Spaces deployment\n\n## Changes Made\n\n- Updated CORS configuration to support Hugging Face Spaces\n- Added proper Dockerfile for containerization\n- Created Hugging Face Space configuration \\(app.yml\\)\n- Added server entry point for Hugging Face deployment\n- Updated environment handling for HF Spaces\n\n## Fixes Applied\n\n- Fixed auth route 404 error by ensuring proper CORS configuration\n- Updated frontend to work with HF Space backend URLs\n- Added support for HF_SPACE_URL environment variable\n- Improved deployment configuration for Hugging Face Spaces\n\n🤖 Generated with Claude Code \\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\")",
       "Bash(dir \"G:\\\\hackathon-02\\\\Todo-App\\\\backend\")",
-      "Bash(npm run build)"
+      "Bash(npm run build)",
+      "WebFetch(domain:abihacodes-todoapp.hf.space)",
+      "Bash(if not exist \"G:\\\\minikube\" mkdir \"G:\\\\minikube\")",
+      "Bash(setx PATH:*)",
+      "Bash(source venv/bin/activate)"
     ]
   }
 }

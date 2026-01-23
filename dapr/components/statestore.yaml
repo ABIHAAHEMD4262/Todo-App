@@ -1,0 +1,13 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: todo-statestore
+  namespace: default
+spec:
+  type: state.postgresql
+  version: v1
+  metadata:
+    - name: connectionString
+      secretKeyRef:
+        name: database-secrets
+        key: DATABASE_URL
