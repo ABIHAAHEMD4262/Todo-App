@@ -21,8 +21,8 @@ FROM base AS deps
 # Copy package files
 COPY package.json package-lock.json* ./
 
-# Install production dependencies
-RUN npm install --legacy-peer-deps --omit=dev && \
+# Install production dependencies (--force handles cross-platform lock file)
+RUN npm install --force --omit=dev && \
     npm cache clean --force
 
 # ========================================
@@ -33,8 +33,8 @@ FROM base AS build-deps
 # Copy package files
 COPY package.json package-lock.json* ./
 
-# Install all dependencies (including devDependencies)
-RUN npm install --legacy-peer-deps && \
+# Install all dependencies (--force handles cross-platform lock file)
+RUN npm install --force && \
     npm cache clean --force
 
 # ========================================

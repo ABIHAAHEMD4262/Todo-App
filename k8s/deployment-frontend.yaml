@@ -32,10 +32,8 @@ spec:
 
       containers:
       - name: frontend
-        image: node:20-alpine
-        imagePullPolicy: IfNotPresent
-        command: ["/bin/sh", "-c"]
-        args: ["echo 'Frontend placeholder - Starting HTTP server on port 3000' && node -e \"require('http').createServer((req,res)=>{res.writeHead(200,{'Content-Type':'application/json'});res.end(JSON.stringify({status:'ok',message:'Todo Frontend Placeholder'}))}).listen(3000)\""]
+        image: todo-app-frontend:v1.0.0
+        imagePullPolicy: Never
 
         ports:
         - name: http

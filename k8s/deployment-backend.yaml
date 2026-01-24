@@ -31,22 +31,8 @@ spec:
 
       containers:
       - name: backend
-        image: tiangolo/uvicorn-gunicorn-fastapi:python3.11-slim
-        imagePullPolicy: IfNotPresent
-        command: ["python", "-c"]
-        args:
-        - |
-          from fastapi import FastAPI
-          import uvicorn
-          app = FastAPI(title="Todo API", description="Kubernetes Demo Backend")
-          @app.get("/health")
-          def health(): return {"status": "healthy", "service": "todo-backend"}
-          @app.get("/")
-          def root(): return {"message": "Todo Backend API Running on Kubernetes!"}
-          @app.get("/docs")
-          def docs(): return {"docs": "API Documentation placeholder"}
-          if __name__ == "__main__":
-              uvicorn.run(app, host="0.0.0.0", port=8000)
+        image: todo-app-backend:v1.0.0
+        imagePullPolicy: Never
 
         ports:
         - name: http
