@@ -6,6 +6,7 @@ Referencing: @backend/CLAUDE.md, @specs/api/rest-endpoints.md
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import init_db
+from app.events.producer import event_producer
 import os
 
 app = FastAPI(
@@ -67,10 +68,20 @@ app.add_middleware(
 # Startup event
 @app.on_event("startup")
 async def startup_event():
-    """Initialize database on startup"""
+    """Initialize database and event producer on startup"""
     init_db()
     print("[OK] Database initialized")
     print(f"[OK] CORS enabled for: {cors_origins}")
+    # Connect Kafka producer
+    await event_producer.connect()
+    print("[OK] Kafka event producer initialized")
+
+# Shutdown event
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Cleanup on shutdown"""
+    await event_producer.disconnect()
+    print("[OK] Kafka event producer disconnected")
 
 # Health check endpoint
 @app.get("/health", tags=["Health"])

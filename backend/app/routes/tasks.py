@@ -20,6 +20,7 @@ from app.schemas import (
 )
 from typing import Optional
 from datetime import datetime, timedelta
+from app.events.producer import event_producer
 
 router = APIRouter()
 
@@ -324,6 +325,9 @@ async def create_task(
         session.add(reminder)
         session.commit()
 
+    # Publish Kafka event
+    await event_producer.task_created(user_id, task.id, task.title, task.priority)
+
     return get_task_with_tags(task, session)
 
 
@@ -448,6 +452,9 @@ async def update_task(
             session.add(reminder)
             session.commit()
 
+    # Publish Kafka event
+    await event_producer.task_updated(user_id, task_id, {"title": task.title, "completed": task.completed})
+
     return get_task_with_tags(task, session)
 
 
@@ -474,6 +481,9 @@ async def delete_task(
 
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
+
+    # Publish Kafka event before deletion
+    await event_producer.task_deleted(user_id, task_id)
 
     session.delete(task)
     session.commit()
@@ -520,5 +530,9 @@ async def toggle_complete(
     # Phase 5: Create next recurring task if completing a recurring task
     if was_incomplete and task.completed and task.is_recurring:
         create_next_recurring_task(task, session)
+
+    # Publish Kafka event for completion
+    if task.completed:
+        await event_producer.task_completed(user_id, task_id, task.title, task.is_recurring)
 
     return get_task_with_tags(task, session)
