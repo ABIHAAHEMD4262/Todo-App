@@ -31,7 +31,7 @@ spec:
 
       containers:
       - name: backend
-        image: todo-app-backend:v1.0.0
+        image: todo-app-backend:v1.0.1
         imagePullPolicy: Never
 
         ports:
