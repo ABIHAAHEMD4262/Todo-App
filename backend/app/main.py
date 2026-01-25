@@ -30,9 +30,11 @@ VERCEL_URL = os.getenv("VERCEL_URL", "")  # Vercel deployment URL
 cors_origins = [
     FRONTEND_URL,
     "http://localhost:3000",  # Local development
+    "http://localhost:3001",  # Local development alternate port
     "http://localhost:7860",  # Hugging Face local
+    "http://127.0.0.1:3000",  # Local IP
+    "http://127.0.0.1:3001",  # Local IP alternate
     "https://huggingface.co",  # Hugging Face main domain
-    "https://*.huggingface.co",  # Hugging Face subdomains
 ]
 
 # Add Vercel deployment URL if available
@@ -65,6 +67,7 @@ if HF_SPACE_URL:
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",  # Allow all Vercel deployments
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
