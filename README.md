@@ -1,17 +1,55 @@
 # Todo App - Hackathon II Evolution
 
-**Hackathon II Submission** | **Current Phase**: IV - Kubernetes Deployment | **Status**: ✅ **Complete**
+**Hackathon II Submission** | **Current Phase**: V - Advanced Cloud | **Status**: ✅ **Complete**
 
 Evolution of a todo application from console app to cloud-native AI chatbot:
 - ✅ **Phase I**: Console Application (Complete)
 - ✅ **Phase II**: Full-Stack Web Application (Complete)
 - ✅ **Phase III**: AI Chatbot with MCP (Complete)
 - ✅ **Phase IV**: Kubernetes Deployment (Complete)
-- 📋 **Phase V**: Cloud + Event-Driven Architecture
+- ✅ **Phase V**: Advanced Cloud + Event-Driven Architecture (Complete)
 
 ---
 
-## 🎯 Phase IV - Kubernetes Deployment (Current)
+## 🎯 Phase V - Advanced Cloud + Event-Driven (Current)
+
+**Completion Date:** January 25, 2026
+**Status:** ✅ Complete
+
+### Phase V Features
+
+✅ **Advanced Features**:
+- Due dates with date picker
+- Task priorities (low, medium, high, urgent)
+- Tags/Categories with color coding
+- Recurring tasks (daily, weekly, monthly)
+- Search and filter functionality
+- Sort by date, priority, title
+
+✅ **Event-Driven Architecture (Kafka)**:
+- Event producer for task operations
+- Event consumer running as background task
+- Topics: task_completed, reminder_due
+- Async processing for notifications
+
+✅ **Dapr Integration**:
+- Pub/Sub component (Kafka)
+- State store component (PostgreSQL)
+- Cron binding for scheduled tasks
+
+✅ **CI/CD Pipeline (GitHub Actions)**:
+- Automated testing (pytest, eslint)
+- Docker image build and push
+- Kubernetes deployment automation
+
+✅ **Monitoring Stack**:
+- Prometheus for metrics collection
+- Grafana with pre-configured dashboards
+- Service health monitoring
+
+---
+
+## 🎯 Phase IV - Kubernetes Deployment
 
 **Completion Date:** January 15, 2026
 **Status:** ✅ Complete
