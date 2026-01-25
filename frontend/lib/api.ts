@@ -63,6 +63,19 @@ class ApiClient {
     return response.json()
   }
 
+  // Helper to clean task data - convert empty strings to null for date fields
+  private cleanTaskData(data: any): any {
+    const cleaned = { ...data }
+    // Convert empty strings to null for date fields
+    if (cleaned.due_date === '') cleaned.due_date = null
+    if (cleaned.recurrence_end_date === '') cleaned.recurrence_end_date = null
+    // Convert empty reminder to null
+    if (cleaned.reminder_minutes === '' || cleaned.reminder_minutes === undefined) {
+      cleaned.reminder_minutes = null
+    }
+    return cleaned
+  }
+
   // Task API methods - Phase 5 Enhanced
   tasks = {
     list: (userId: string, params?: TaskFilterParams) => {
@@ -85,13 +98,13 @@ class ApiClient {
     create: (userId: string, data: CreateTaskData) =>
       this.request<Task>(`/api/${userId}/tasks`, {
         method: 'POST',
-        body: JSON.stringify(data)
+        body: JSON.stringify(this.cleanTaskData(data))
       }),
 
     update: (userId: string, taskId: number, data: UpdateTaskData) =>
       this.request<Task>(`/api/${userId}/tasks/${taskId}`, {
         method: 'PUT',
-        body: JSON.stringify(data)
+        body: JSON.stringify(this.cleanTaskData(data))
       }),
 
     delete: (userId: string, taskId: number) =>
