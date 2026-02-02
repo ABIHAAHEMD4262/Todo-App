@@ -1,3 +1,13 @@
+---
+title: Todo App API
+emoji: ✅
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+app_port: 7860
+---
+
 # Todo App - Hackathon II Evolution
 
 **Hackathon II Submission** | **Current Phase**: V - Advanced Cloud | **Status**: ✅ **Complete**
