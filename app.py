@@ -33,14 +33,18 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+# Import ALL models BEFORE init_db so SQLModel knows about all tables
+from app.models import User, Task, Tag, TaskTag, Conversation, Message, Reminder
+
 # Database initialization
 from app.database import init_db
 
 @app.on_event("startup")
 async def startup_event():
     """Initialize database on startup"""
+    # Create all tables (including tags, task_tags if they don't exist)
     init_db()
-    print("[OK] Database initialized")
+    print("[OK] Database initialized (all tables created)")
     print("[OK] CORS enabled for: *")
 
 # Health check endpoint
