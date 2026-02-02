@@ -14,9 +14,11 @@ import {
   Home,
   User,
   Settings,
-  Tag
+  Tag,
+  Bell
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { NotificationBell } from './notification-bell'
 
 interface NavItem {
   name: string
@@ -89,13 +91,16 @@ export function Sidebar({ isMobileOpen: externalMobileOpen, setIsMobileOpen: ext
             </div>
           )}
 
-          {/* Mobile Close Button */}
-          <button
-            onClick={() => setIsMobileOpen(false)}
-            className="lg:hidden text-slate-400 hover:text-white"
-          >
-            <X className="w-6 h-6" />
-          </button>
+          {/* Notification Bell & Mobile Close */}
+          <div className="flex items-center gap-2">
+            {!isCollapsed && <NotificationBell />}
+            <button
+              onClick={() => setIsMobileOpen(false)}
+              className="lg:hidden text-slate-400 hover:text-white"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
         </div>
 
         {/* Navigation */}
@@ -204,19 +209,22 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
       {/* Main Content */}
       <div className="flex-1 flex flex-col lg:ml-72 transition-all duration-300 overflow-hidden">
         {/* Mobile Header */}
-        <header className="lg:hidden bg-slate-900/90 backdrop-blur-md border-b border-indigo-500/10 px-4 py-3 flex items-center gap-3 sticky top-0 z-30">
-          <button
-            onClick={() => setIsSidebarOpen(true)}
-            className="p-2 -ml-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center ai-glow">
-              <CheckSquare className="w-5 h-5 text-white" />
+        <header className="lg:hidden bg-slate-900/90 backdrop-blur-md border-b border-indigo-500/10 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="p-2 -ml-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center ai-glow">
+                <CheckSquare className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold ai-gradient-text">Taskly AI</span>
             </div>
-            <span className="text-xl font-bold ai-gradient-text">Taskly AI</span>
           </div>
+          <NotificationBell />
         </header>
 
         {/* Page Content */}

@@ -163,6 +163,47 @@ class ApiClient {
     getStats: (userId: string) =>
       this.request<DashboardStats>(`/api/${userId}/dashboard/stats`)
   }
+
+  // Reminders API methods - Phase 5
+  reminders = {
+    list: (userId: string, status?: 'all' | 'pending' | 'sent' | 'unread') =>
+      this.request<ReminderListResponse>(`/api/${userId}/reminders${status ? `?status=${status}` : ''}`),
+
+    getDue: (userId: string) =>
+      this.request<ReminderListResponse>(`/api/${userId}/reminders/due`),
+
+    markRead: (userId: string, reminderId: number) =>
+      this.request<{ status: string }>(`/api/${userId}/reminders/${reminderId}/read`, {
+        method: 'PATCH'
+      }),
+
+    markAllRead: (userId: string) =>
+      this.request<{ status: string }>(`/api/${userId}/reminders/read-all`, {
+        method: 'PATCH'
+      }),
+
+    delete: (userId: string, reminderId: number) =>
+      this.request<void>(`/api/${userId}/reminders/${reminderId}`, {
+        method: 'DELETE'
+      })
+  }
+}
+
+// Reminder types
+export interface Reminder {
+  id: number
+  task_id: number
+  task_title: string
+  remind_at: string
+  sent: boolean
+  read: boolean
+  created_at: string
+}
+
+export interface ReminderListResponse {
+  reminders: Reminder[]
+  total: number
+  unread_count: number
 }
 
 export const api = new ApiClient()

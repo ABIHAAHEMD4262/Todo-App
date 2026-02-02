@@ -1,0 +1,8 @@
+# Screenshots Directory
+
+Add your screenshots here:
+1. ai-chat-demo.png - AI Chat conversation showing task creation
+2. dashboard-stats.png - Dashboard with statistics
+3. task-filters.png - Task list with filters active
+4. tag-management.png - Tags page or color picker
+5. k8s-pods.png - Terminal showing kubectl get pods

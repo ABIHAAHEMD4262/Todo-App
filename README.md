@@ -8,448 +8,351 @@ pinned: false
 app_port: 7860
 ---
 
-# Todo App - Hackathon II Evolution
+<div align="center">
 
-**Hackathon II Submission** | **Current Phase**: V - Advanced Cloud | **Status**: ✅ **Complete**
+# ✅ Taskly
 
-Evolution of a todo application from console app to cloud-native AI chatbot:
-- ✅ **Phase I**: Console Application (Complete)
-- ✅ **Phase II**: Full-Stack Web Application (Complete)
-- ✅ **Phase III**: AI Chatbot with MCP (Complete)
-- ✅ **Phase IV**: Kubernetes Deployment (Complete)
-- ✅ **Phase V**: Advanced Cloud + Event-Driven Architecture (Complete)
+### AI-Native Task Management for the Modern Developer
 
----
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-taskley.vercel.app-6366f1?style=for-the-badge)](https://taskley.vercel.app/)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/ABIHAAHEMD4262/Todo-App)
+[![Phase](https://img.shields.io/badge/Phase-V_Complete-10b981?style=for-the-badge)]()
 
-## 🎯 Phase V - Advanced Cloud + Event-Driven (Current)
+**From console app → Full-stack web app → AI chatbot → Kubernetes-ready in 5 phases**
 
-**Completion Date:** January 25, 2026
-**Status:** ✅ Complete
+Built with Next.js 16+ • FastAPI • PostgreSQL • OpenAI GPT-4 • Kubernetes • Helm • Dapr
 
-### Phase V Features
+[Live Demo](https://taskley.vercel.app/) · [Watch Demo Video](#demo-video) · [View Architecture](#architecture-overview)
 
-✅ **Advanced Features**:
-- Due dates with date picker
-- Task priorities (low, medium, high, urgent)
-- Tags/Categories with color coding
-- Recurring tasks (daily, weekly, monthly)
-- Search and filter functionality
-- Sort by date, priority, title
-
-✅ **Event-Driven Architecture (Kafka)**:
-- Event producer for task operations
-- Event consumer running as background task
-- Topics: task_completed, reminder_due
-- Async processing for notifications
-
-✅ **Dapr Integration**:
-- Pub/Sub component (Kafka)
-- State store component (PostgreSQL)
-- Cron binding for scheduled tasks
-
-✅ **CI/CD Pipeline (GitHub Actions)**:
-- Automated testing (pytest, eslint)
-- Docker image build and push
-- Kubernetes deployment automation
-
-✅ **Monitoring Stack**:
-- Prometheus for metrics collection
-- Grafana with pre-configured dashboards
-- Service health monitoring
+</div>
 
 ---
 
-## 🎯 Phase IV - Kubernetes Deployment
+## 🎬 Live Demo
 
-**Completion Date:** January 15, 2026
-**Status:** ✅ Complete
-**Deployment:** Local Minikube Cluster
+**Experience Taskly now:** [https://taskley.vercel.app/](https://taskley.vercel.app/)
 
-### Quick Start - Kubernetes
+| Feature | What You'll See |
+|---------|-----------------|
+| **AI Chat** | Natural language task management with GPT-4 |
+| **Smart Dashboard** | Real-time stats, completion rates, activity feed |
+| **Advanced Tasks** | Priorities, tags, due dates, recurring schedules |
+| **Beautiful UI** | Modern dark theme with glassmorphism effects |
+
+> 💡 **Try saying:** "Add a task to review the project proposal tomorrow with high priority"
+
+---
+
+## 🚀 Phase V – Advanced Cloud Deployment
+
+**Status:** ✅ Complete (Local Kubernetes + Production Readiness)
+
+Phase V transforms Taskly into a **cloud-native, event-driven application** ready for enterprise deployment.
+
+### What's Deployed
+
+| Component | Status | Environment |
+|-----------|--------|-------------|
+| **Frontend** | ✅ Live | [Vercel](https://taskley.vercel.app/) |
+| **Backend API** | ✅ Live | [Hugging Face Spaces](https://huggingface.co/spaces/AbihaCodes/Taskly_Chatbot) |
+| **Database** | ✅ Live | Neon Serverless PostgreSQL |
+| **Kubernetes** | ✅ Validated | Local Minikube Cluster |
+
+### Cloud-Native Architecture (Validated on Minikube)
+
+```
+✅ Helm Chart deployment with parameterized values
+✅ Horizontal Pod Autoscaler (HPA) configured
+✅ Dapr sidecar integration for pub/sub
+✅ Kafka event streaming (task.completed, reminder.due)
+✅ Prometheus + Grafana monitoring stack
+✅ GitHub Actions CI/CD pipeline
+```
+
+### Why Local Kubernetes?
+
+I chose to **validate thoroughly on Minikube** rather than deploy to a cloud cluster because:
+
+1. **Cost-conscious development** – Free tier limits on cloud Kubernetes
+2. **Full validation** – Every manifest, Helm chart, and Dapr binding tested
+3. **Production-ready artifacts** – One `helm install` away from any cloud (AKS, EKS, GKE)
 
 ```bash
-# Prerequisites
-# - Docker Desktop running
-# - Minikube installed
-# - kubectl installed
-# - Helm 3+ installed
+# Deploy to any Kubernetes cluster
+helm install taskly ./helm-chart -n taskly --create-namespace
+```
 
+---
+
+## ✨ Key Features Demo
+
+### 🤖 AI-Powered Task Management
+- **Natural language input** – "Add a meeting with the team next Monday at 3pm"
+- **GPT-4 agent** with MCP (Model Context Protocol) integration
+- **Smart actions** – Create, update, complete, delete tasks via chat
+- **Context-aware responses** – Understands priorities, tags, due dates
+
+![AI Chat Demo](docs/screenshots/ai-chat-demo.png)
+*Creating tasks with natural language – GPT-4 understands context, priorities, and dates*
+
+### 📊 Intelligent Dashboard
+- Real-time task statistics (total, pending, completed)
+- Completion rate tracking with progress visualization
+- Recent activity feed with action history
+- Quick action buttons for common operations
+
+![Dashboard](docs/screenshots/dashboard-stats.png)
+*Real-time statistics and activity tracking*
+
+### 📋 Advanced Task Features
+- **Priorities** – Urgent, High, Medium, Low with color coding
+- **Tags** – Custom categories with color picker
+- **Due dates** – Date picker with overdue highlighting
+- **Recurring tasks** – Daily, weekly, monthly schedules
+- **Search & filters** – Find any task instantly
+- **Sort options** – By date, priority, title, status
+
+![Task Management](docs/screenshots/task-filters.png)
+*Advanced filtering, sorting, and tag management*
+
+### 🔐 Secure Authentication
+- JWT-based authentication with Better Auth
+- Protected routes and API endpoints
+- Secure session management
+
+---
+
+## 🏗️ Architecture Overview
+
+```mermaid
+graph TB
+    subgraph "Frontend - Vercel"
+        UI[Next.js 16+ App Router]
+        AUTH[Better Auth Client]
+    end
+
+    subgraph "Backend - HF Spaces / K8s"
+        API[FastAPI Server]
+        AGENT[OpenAI GPT-4 Agent]
+        MCP[MCP Protocol Server]
+    end
+
+    subgraph "Data Layer"
+        DB[(Neon PostgreSQL)]
+        KAFKA[Kafka Events]
+    end
+
+    subgraph "Kubernetes - Minikube"
+        HELM[Helm Chart]
+        HPA[Auto-Scaling]
+        DAPR[Dapr Sidecars]
+        PROM[Prometheus]
+        GRAF[Grafana]
+    end
+
+    UI --> API
+    UI --> AUTH
+    API --> DB
+    API --> AGENT
+    AGENT --> MCP
+    API --> KAFKA
+    HELM --> HPA
+    HELM --> DAPR
+    PROM --> GRAF
+
+    style UI fill:#6366f1
+    style AGENT fill:#10b981
+    style DB fill:#f59e0b
+    style HELM fill:#3b82f6
+```
+
+### System Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                              FRONTEND                                    │
+│                         (Vercel Deployment)                              │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │  Next.js 16+ App Router │ TypeScript │ Tailwind CSS │ Better Auth│   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────┬───────────────────────────────────────┘
+                                  │ HTTPS/REST
+                                  ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                              BACKEND                                     │
+│                    (HF Spaces / Kubernetes)                              │
+│  ┌───────────────┐  ┌───────────────┐  ┌───────────────────────────┐   │
+│  │   FastAPI     │  │  GPT-4 Agent  │  │    MCP Protocol Server    │   │
+│  │   REST API    │◄─┤  (OpenAI)     │◄─┤  (Model Context Protocol) │   │
+│  └───────┬───────┘  └───────────────┘  └───────────────────────────┘   │
+└──────────┼──────────────────────────────────────────────────────────────┘
+           │
+           ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                           DATA LAYER                                     │
+│  ┌───────────────────────┐        ┌───────────────────────────────┐    │
+│  │   Neon PostgreSQL     │        │      Kafka Event Stream       │    │
+│  │   (Serverless DB)     │        │  (task.completed, reminder)   │    │
+│  └───────────────────────┘        └───────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🎁 Bonus & Reusable Intelligence
+
+### Spec-Driven Development (SDD)
+This project was built using **rigorous specification-driven methodology**:
+
+```
+📁 specs/
+├── features/           # Feature specifications
+│   ├── task-crud.md   # CRUD operations spec
+│   ├── authentication.md
+│   └── dashboard.md
+├── api/               # API contracts
+│   └── rest-endpoints.md
+└── database/          # Schema definitions
+    └── schema.md
+```
+
+### Reusable Intelligence Assets
+```
+📁 .claude/
+├── skills/            # Domain expertise modules
+│   ├── phase2-frontend-ui
+│   ├── phase2-backend-api
+│   └── phase2-auth-setup
+└── agents/            # Autonomous specialists
+    ├── frontend-specialist
+    └── backend-specialist
+```
+
+### Development Metrics
+| Metric | Value |
+|--------|-------|
+| **Total Phases** | 5 (Console → Web → AI → K8s → Cloud) |
+| **Spec Documents** | 15+ detailed specifications |
+| **API Endpoints** | 20+ RESTful routes |
+| **Test Coverage** | Unit + Integration tests |
+| **CI/CD** | GitHub Actions pipeline |
+
+---
+
+## 🛠️ Quick Start
+
+### Prerequisites
+- Node.js 18+ & npm
+- Python 3.11+
+- Docker (for Kubernetes)
+
+### Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev    # http://localhost:3000
+```
+
+### Backend Setup
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload    # http://localhost:8000
+```
+
+### Kubernetes Deployment
+```bash
 # Start Minikube
 minikube start --driver=docker --cpus=4 --memory=7500
 
-# Enable addons
-minikube addons enable ingress
-minikube addons enable metrics-server
+# Deploy with Helm
+helm install taskly ./helm-chart -n taskly --create-namespace
 
-# Deploy using Helm
-helm install todo-app ./helm-chart -n todo-app --create-namespace
-
-# Access the application
-kubectl port-forward deployment/todo-frontend -n todo-app 3000:3000
-kubectl port-forward deployment/todo-backend -n todo-app 8000:8000
-
-# Open in browser
-# Frontend: http://localhost:3000
-# Backend API: http://localhost:8000/docs
-```
-
-### Phase IV Features
-
-✅ **Docker Containerization**:
-- Multi-stage builds for optimized images
-- Frontend: ~127MB (Next.js standalone)
-- Backend: ~89MB (Python Alpine)
-- Non-root users for security
-- Health check endpoints
-
-✅ **Kubernetes Resources**:
-- Deployments with multiple replicas
-- Services for internal communication
-- ConfigMaps for configuration
-- Secrets for sensitive data
-- Horizontal Pod Autoscaler (HPA)
-
-✅ **Helm Chart**:
-- Parameterized deployments
-- Environment-specific values files
-- Easy upgrades and rollbacks
-
-✅ **Cloud-Native Patterns**:
-- 12-Factor App compliance
-- Stateless application design
-- External database (Neon PostgreSQL)
-- Graceful shutdown handling
-
-### Architecture (Phase IV)
-
-```
-┌─────────────────────────────────────────────────┐
-│              Minikube Cluster                    │
-│                                                  │
-│  ┌──────────────────────────────────────────┐  │
-│  │           Kubernetes Services             │  │
-│  │                                           │  │
-│  │  ┌─────────────┐    ┌─────────────┐     │  │
-│  │  │  Frontend   │    │   Backend   │     │  │
-│  │  │   Service   │    │   Service   │     │  │
-│  │  │  (ClusterIP)│    │  (ClusterIP)│     │  │
-│  │  └──────┬──────┘    └──────┬──────┘     │  │
-│  │         │                   │            │  │
-│  │  ┌──────▼──────┐    ┌──────▼──────┐     │  │
-│  │  │  Frontend   │    │   Backend   │     │  │
-│  │  │    Pods     │    │    Pods     │     │  │
-│  │  │  (2 replicas)│   │ (2 replicas)│     │  │
-│  │  └─────────────┘    └──────┬──────┘     │  │
-│  └────────────────────────────┼─────────────┘  │
-└───────────────────────────────┼─────────────────┘
-                                │
-                    ┌───────────▼───────────┐
-                    │    Neon PostgreSQL    │
-                    │   (External Database) │
-                    └───────────────────────┘
+# Access services
+kubectl port-forward deployment/todo-frontend -n taskly 3000:3000
+kubectl port-forward deployment/todo-backend -n taskly 8000:8000
 ```
 
 ---
 
-## Phase III: AI Chatbot with MCP (Complete)
+## 📸 Screenshots
 
-**Features:**
-- Natural language task management
-- OpenAI ChatKit integration
-- Agents SDK for AI operations
-- MCP (Model Context Protocol) server
-- Conversation history persistence
+### AI Chat Interface
+![AI Chat](docs/screenshots/ai-chat-demo.png)
 
----
+### Dashboard Statistics
+![Dashboard](docs/screenshots/dashboard-stats.png)
 
-## Phase II: Full-Stack Web Application
+### Task List with Filters
+![Tasks](docs/screenshots/task-filters.png)
 
-A modern, multi-user todo web application built with Next.js 16+, FastAPI, and PostgreSQL.
+### Tag Management
+![Tags](docs/screenshots/tag-management.png)
 
-### Phase II Features
-
-✅ **Required (Basic Level)**:
-1. Add Task
-2. View Task List
-3. Update Task
-4. Delete Task
-5. Mark Complete/Incomplete
-
-✅ **Authentication**:
-- User Signup/Signin (Better Auth)
-- JWT Authentication
-- Protected Routes
-- Multi-user Support
-
-✅ **Bonus Features**:
-- User Dashboard with Statistics
-- Recent Activity Feed
-- Task Filtering (All/Pending/Completed)
-
-### Tech Stack (Phase II)
-
-**Frontend**:
-- Next.js 16+ (App Router)
-- TypeScript
-- Tailwind CSS
-- Better Auth
-- React Hook Form + Zod
-
-**Backend**:
-- FastAPI
-- SQLModel (ORM)
-- Neon PostgreSQL
-- JWT Authentication
-- Pydantic Validation
-
-**Deployment**:
-- Frontend: Vercel
-- Backend: Railway/Render
-- Database: Neon (Serverless PostgreSQL)
+### Kubernetes Pods
+![K8s Pods](docs/screenshots/k8s-pods.png)
 
 ---
 
-## Phase I: Console Application (Complete)
-
-A command-line interface (CLI) todo application built using Python 3.13+ with in-memory storage.
-
----
-
-## Features
-
-✅ **Add Task** - Create new tasks with title and optional description (1-200 char title, max 1000 char description)
-✅ **View Tasks** - Display all tasks with ID, title, description, completion status, and creation timestamp
-✅ **Update Task** - Modify existing task's title and/or description
-✅ **Delete Task** - Remove tasks with confirmation prompt
-✅ **Mark Complete/Incomplete** - Toggle task completion status
-
-### Technical Highlights
-
-- **In-Memory Storage**: Pure Python lists and dictionaries (no database)
-- **UTF-8 Support**: Full Unicode support including emojis and international characters
-- **Input Validation**: Comprehensive validation with user-friendly error messages
-- **No Dependencies**: Uses only Python standard library
-- **PEP 8 Compliant**: Clean, readable code following Python best practices
-
----
-
-## Quick Start
-
-### Prerequisites
-
-- Python 3.13+ ([Download](https://www.python.org/downloads/))
-- UV package manager ([Installation](https://docs.astral.sh/uv/))
-
-### Installation
-
-```bash
-# Clone repository
-git clone <repository-url>
-cd Todo-App
-
-# Verify Python version
-python --version  # Should show 3.13+
-
-# Verify UV installation
-uv --version
-```
-
-### Running the Application
-
-```bash
-# Direct file execution (recommended for Phase I)
-uv run src/main.py
-
-# Alternative: As a Python module
-python -m src.main
-```
-
-**Note**: UTF-8 encoding is automatically configured for Windows - no need to run `chcp 65001`
-
----
-
-## Usage Example
-
-```
-==============================================
-        TODO APP - PHASE I
-==============================================
-
-1. Add New Task
-2. View All Tasks
-3. Update Task
-4. Delete Task
-5. Mark Task Complete/Incomplete
-6. Exit
-
-Enter your choice (1-6): 1
-
---- Add New Task ---
-Enter task title: Buy groceries
-Enter task description (optional): Milk, eggs, bread
-
-✓ Task #1 created: 'Buy groceries'
-```
-
----
-
-## Project Structure
+## 🗂️ Project Structure
 
 ```
 Todo-App/
-├── .specify/
-│   ├── memory/
-│   │   └── constitution.md      # Project principles
-│   ├── templates/               # Spec templates
-│   └── scripts/                 # Helper scripts
-├── specs/
-│   └── console-app/
-│       ├── spec.md              # Requirements & test cases
-│       ├── plan.md              # Architecture & decisions
-│       ├── data-model.md        # Task structure
-│       ├── quickstart.md        # Setup guide
-│       └── tasks.md             # Implementation tasks
-├── history/
-│   └── prompts/                 # Prompt History Records (PHRs)
-├── src/
-│   ├── main.py                  # Entry point & menu system
-│   ├── todo_manager.py          # CRUD operations
-│   └── utils.py                 # Validation & formatting
-├── .gitignore                   # Git ignore patterns
-├── pyproject.toml               # UV configuration
-└── README.md                    # This file
+├── frontend/                 # Next.js 16+ Application
+│   ├── app/                 # App Router pages
+│   ├── components/          # React components
+│   ├── hooks/               # Custom hooks
+│   └── lib/                 # Utilities & API client
+├── backend/                  # FastAPI Application
+│   ├── app/
+│   │   ├── routes/          # API endpoints
+│   │   ├── models.py        # SQLModel models
+│   │   └── auth.py          # JWT authentication
+│   └── migrations/          # Alembic migrations
+├── helm-chart/               # Kubernetes Helm Chart
+├── k8s/                      # Kubernetes manifests
+├── dapr/                     # Dapr components
+├── specs/                    # Specification documents
+└── .claude/                  # Reusable AI intelligence
 ```
 
 ---
 
-## Specification-Driven Development
+## 💜 A Note on AI-Native Development
 
-This project was built using **Spec-Driven Development (SDD)** methodology:
+Building Taskly taught me that **AI isn't just a feature—it's a development philosophy**.
 
-1. **Specify** - Created comprehensive spec with 5 user stories, 25+ test cases
-2. **Clarify** - Resolved 5 critical ambiguities through targeted questions
-3. **Plan** - Designed 3-layer architecture (Presentation → Logic → Utils)
-4. **Tasks** - Generated 48 atomic, testable implementation tasks
-5. **Implement** - Claude Code generated all code from specifications
+From using Claude Code for spec-driven development to integrating GPT-4 as a task management agent, every phase reinforced my belief that:
 
-**Key Documents**:
-- [Specification](specs/console-app/spec.md) - Full requirements
-- [Plan](specs/console-app/plan.md) - Architecture & tech decisions
-- [Data Model](specs/console-app/data-model.md) - Task structure & validation
-- [Tasks](specs/console-app/tasks.md) - Implementation breakdown (47/48 complete)
+> **The future of software is AI-native from day one.**
+
+I'm excited about Panaversity's mission to train the next generation of AI-native developers. This hackathon was just the beginning—I'm ready to build, teach, and contribute to this ecosystem.
+
+**Let's build the future together.** 🚀
 
 ---
 
-## Testing
-
-### Manual Testing
-
-Phase I uses manual testing per project constitution. Run through the test scenarios in [spec.md](specs/console-app/spec.md):
-
-**Test Checklist** (25 test cases):
-- ✓ Add task variations (title only, with description, empty title, oversized inputs)
-- ✓ View tasks (empty list, single task, multiple tasks, completion status)
-- ✓ Update task (title, description, both, invalid ID, empty title)
-- ✓ Delete task (confirmation, cancellation, invalid ID)
-- ✓ Toggle completion (complete → incomplete → complete)
-
-### Running Tests
-
-```bash
-# Start application
-uv run todo
-
-# Follow test scenarios from spec.md
-# Verify each feature works as expected
-```
-
----
-
-## Technical Details
-
-### Data Model
-
-```python
-Task = {
-    "id": int,              # Auto-incremented, never reused
-    "title": str,           # Required, 1-200 characters
-    "description": str,     # Optional, max 1000 characters
-    "completed": bool,      # Default: False
-    "created_at": str       # ISO 8601 timestamp
-}
-```
-
-### Architecture
-
-**3-Layer Design**:
-1. **Presentation Layer** (`main.py`) - Menu, user I/O, display logic
-2. **Business Logic** (`todo_manager.py`) - CRUD operations, task storage
-3. **Utility Layer** (`utils.py`) - Validation, formatting helpers
-
-### Key Design Decisions
-
-- **ID Management**: IDs are unique lifetime identifiers, never reused after deletion
-- **Description Overflow**: Truncate to 1000 chars with warning (not error)
-- **Update Confirmation**: No confirmation required (non-destructive operation)
-- **UTF-8 Encoding**: Full Unicode support by default (Python 3.13+)
-- **No Logging**: Phase I uses print statements for debugging (logging in Phase II)
-
----
-
-## Constitution Compliance
-
-✅ **Spec-Driven Development** - Followed SDD workflow (Specify → Plan → Tasks → Implement)
-✅ **In-Memory First** - Pure in-memory storage (data lost on exit)
-✅ **CLI-First Interface** - Command-line menu system only
-✅ **Test-Driven Development** - 25+ test cases defined in spec
-✅ **Simple Data Model** - Matches constitution exactly
-✅ **Clean Code Standards** - PEP 8 compliant, functions < 50 lines
-✅ **Error Handling** - Comprehensive validation, user-friendly messages
-✅ **Progressive Enhancement** - Phase I only, no scope creep
-
-See [constitution.md](.specify/memory/constitution.md) for full details.
-
----
-
-## Limitations (Phase I)
-
-⚠️ **No Data Persistence** - All tasks lost when application exits (intentional for Phase I)
-⚠️ **Single User** - No authentication or multi-user support
-⚠️ **No Advanced Features** - No search, filter, priorities, tags, or due dates
-
-**Future Phases**:
-- Phase II: Web interface + PostgreSQL persistence
-- Phase III: AI chatbot interface with MCP server
-- Phase IV: Kubernetes deployment
-- Phase V: Cloud + event-driven architecture (Kafka, Dapr)
-
----
-
-## Contributing
-
-This is a hackathon submission. For issues or questions:
-1. Review the [spec](specs/console-app/spec.md) for expected behavior
-2. Check [tasks.md](specs/console-app/tasks.md) for implementation status
-3. See [constitution](.specify/memory/constitution.md) for project principles
-
----
-
-## License
+## 📄 License
 
 MIT License - Hackathon II Submission
 
 ---
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
-- Built using **Claude Code** (AI-assisted development)
-- Methodology: **Spec-Driven Development** (SDD)
-- Framework: **Spec-Kit Plus** (13 commands)
-- Hackathon: **Hackathon II** - Todo App Evolution
+- **Panaversity** - For the hackathon opportunity
+- **Claude Code** - AI-assisted development
+- **OpenAI** - GPT-4 agent capabilities
+- **Spec-Driven Development** - Methodology that made this possible
 
 ---
 
-**Version**: 4.0.0 (Phase IV - Kubernetes)
-**Created**: 2025-12-26
-**Phase IV Completed**: 2026-01-15
-**Status**: ✅ Phase IV Complete - Kubernetes Deployment
+<div align="center">
+
+**Built with 💜 by [Syeda Abiha Ahmed](https://github.com/ABIHAAHEMD4262)**
+
+*Panaversity Hackathon II Submission*
+
+**Version:** 5.0.0 | **Phase V Complete** | **February 2026**
+
+</div>

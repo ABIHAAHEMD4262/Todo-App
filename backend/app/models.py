@@ -195,4 +195,6 @@ class Reminder(SQLModel, table=True):
     task_id: int = Field(foreign_key="tasks.id", index=True)
     remind_at: datetime = Field(index=True)
     sent: bool = Field(default=False, index=True)
+    sent_at: Optional[datetime] = Field(default=None)
+    read: bool = Field(default=False, index=True)
     created_at: datetime = Field(default_factory=datetime.utcnow)

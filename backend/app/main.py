@@ -8,11 +8,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import init_db
 from app.events.producer import event_producer, TOPIC_TASK_COMPLETED, TOPIC_REMINDER_DUE
 from app.events.consumer import event_consumer
+from app.scheduler import reminder_checker
 import asyncio
 import os
 
 # Background task for consumer
 _consumer_task = None
+REMINDER_CHECKER_ENABLED = os.getenv("REMINDER_CHECKER_ENABLED", "true").lower() == "true"
 
 app = FastAPI(
     title="Todo API",
@@ -76,7 +78,7 @@ app.add_middleware(
 # Startup event
 @app.on_event("startup")
 async def startup_event():
-    """Initialize database, event producer, and consumer on startup"""
+    """Initialize database, event producer, consumer, and reminder checker on startup"""
     global _consumer_task
 
     init_db()
@@ -93,11 +95,21 @@ async def startup_event():
     _consumer_task = asyncio.create_task(event_consumer.start_consuming())
     print("[OK] Kafka event consumer started")
 
+    # Start reminder checker background task
+    if REMINDER_CHECKER_ENABLED:
+        await reminder_checker.start()
+        print("[OK] Reminder checker started (checks every 60s)")
+
 # Shutdown event
 @app.on_event("shutdown")
 async def shutdown_event():
     """Cleanup on shutdown"""
     global _consumer_task
+
+    # Stop reminder checker
+    if REMINDER_CHECKER_ENABLED:
+        await reminder_checker.stop()
+        print("[OK] Reminder checker stopped")
 
     # Stop consumer
     await event_consumer.stop()
@@ -136,8 +148,10 @@ async def root():
 # Include routers
 from app.routes import tasks, dashboard, chat, tags
 from app.routes.auth import router as auth_router
+from app.routes.reminders import router as reminders_router
 app.include_router(tasks.router, prefix="/api", tags=["tasks"])
 app.include_router(tags.router, prefix="/api", tags=["tags"])
+app.include_router(reminders_router, prefix="/api", tags=["reminders"])
 app.include_router(dashboard.router, prefix="/api", tags=["dashboard"])
 app.include_router(chat.router, prefix="/api", tags=["chat"])
 app.include_router(auth_router, prefix="/api", tags=["auth"])
