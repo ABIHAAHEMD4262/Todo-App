@@ -198,11 +198,11 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen bg-[#0a0e1a] bg-grid">
+    <div className="flex h-screen overflow-hidden bg-[#0a0e1a] bg-grid">
       <Sidebar isMobileOpen={isSidebarOpen} setIsMobileOpen={setIsSidebarOpen} />
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-72 transition-all duration-300">
+      <div className="flex-1 flex flex-col lg:ml-72 transition-all duration-300 overflow-hidden">
         {/* Mobile Header */}
         <header className="lg:hidden bg-slate-900/90 backdrop-blur-md border-b border-indigo-500/10 px-4 py-3 flex items-center gap-3 sticky top-0 z-30">
           <button
@@ -220,7 +220,7 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Page Content */}
-        <main className="min-h-screen">
+        <main className="flex-1 overflow-auto">
           {children}
         </main>
       </div>
