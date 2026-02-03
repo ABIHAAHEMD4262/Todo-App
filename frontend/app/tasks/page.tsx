@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { SidebarLayout } from '@/components/ui/sidebar'
 import { useAuthContext } from '@/components/providers/auth-provider'
@@ -50,31 +50,13 @@ export default function TasksPage() {
     }
   }
 
-  // Load tasks with Phase 5 server-side filtering
-  const loadTasks = async (
-    currentFilter: TaskStatus,
-    currentSearch: string,
-    currentPriority: TaskPriority | '',
-    currentTag: string,
-    currentSortBy: TaskSortBy,
-    currentSortOrder: SortOrder
-  ) => {
+  // Load all tasks from API (filtering done client-side for reliability)
+  const loadTasks = async () => {
     if (!user) return
 
     try {
       setLoading(true)
-
-      // Build filter params for backend
-      const params: any = {
-        status: currentFilter,
-        sort_by: currentSortBy,
-        sort_order: currentSortOrder
-      }
-      if (currentPriority) params.priority = currentPriority
-      if (currentTag) params.tag_ids = currentTag
-      if (currentSearch.trim()) params.search = currentSearch.trim()
-
-      const response = await api.tasks.list(user.id, params)
+      const response = await api.tasks.list(user.id)
       setTasks(response.tasks)
     } catch (error) {
       console.error('Failed to load tasks:', error)
@@ -84,19 +66,13 @@ export default function TasksPage() {
     }
   }
 
-  // Load tags on mount
+  // Load tags and tasks on mount
   useEffect(() => {
     if (user) {
       loadTags()
+      loadTasks()
     }
   }, [user])
-
-  // Load tasks when filters change
-  useEffect(() => {
-    if (user) {
-      loadTasks(filter, searchQuery, priorityFilter, tagFilter, sortBy, sortOrder)
-    }
-  }, [user, filter, searchQuery, priorityFilter, tagFilter, sortBy, sortOrder])
 
   // Create task
   const handleCreate = async (data: any) => {
@@ -107,7 +83,7 @@ export default function TasksPage() {
       await api.tasks.create(user.id, data)
       toast.success('Task created successfully!')
       setShowForm(false)
-      loadTasks(filter, searchQuery, priorityFilter, tagFilter, sortBy, sortOrder)
+      loadTasks()
     } catch (error) {
       console.error('Failed to create task:', error)
       toast.error('Failed to create task')
@@ -125,7 +101,7 @@ export default function TasksPage() {
       await api.tasks.update(user.id, editingTask.id, data)
       toast.success('Task updated successfully!')
       setEditingTask(undefined)
-      loadTasks(filter, searchQuery, priorityFilter, tagFilter, sortBy, sortOrder)
+      loadTasks()
     } catch (error) {
       console.error('Failed to update task:', error)
       toast.error('Failed to update task')
@@ -144,7 +120,7 @@ export default function TasksPage() {
     try {
       setTogglingTaskId(taskId)
       await api.tasks.toggleComplete(user.id, taskId)
-      await loadTasks(filter, searchQuery, priorityFilter, tagFilter, sortBy, sortOrder)
+      await loadTasks()
       toast.success(task.completed ? 'Task marked as pending' : 'Task completed!')
     } catch (error) {
       console.error('Failed to toggle task:', error)
@@ -162,7 +138,7 @@ export default function TasksPage() {
     try {
       await api.tasks.delete(user.id, taskId)
       toast.success('Task deleted!')
-      loadTasks(filter, searchQuery, priorityFilter, tagFilter, sortBy, sortOrder)
+      loadTasks()
     } catch (error) {
       console.error('Failed to delete task:', error)
       toast.error('Failed to delete task')
@@ -182,12 +158,71 @@ export default function TasksPage() {
     )
   }
 
+  // Stats computed from ALL tasks (unfiltered)
   const stats = {
     total: tasks.length,
     pending: tasks.filter(t => !t.completed).length,
     completed: tasks.filter(t => t.completed).length,
     overdue: tasks.filter(t => !t.completed && t.due_date && new Date(t.due_date) < new Date()).length
   }
+
+  // Client-side filtering for reliability
+  const filteredTasks = useMemo(() => {
+    let result = [...tasks]
+
+    // Status filter
+    if (filter === 'pending') {
+      result = result.filter(t => !t.completed)
+    } else if (filter === 'completed') {
+      result = result.filter(t => t.completed)
+    } else if (filter === 'overdue') {
+      result = result.filter(t => !t.completed && t.due_date && new Date(t.due_date) < new Date())
+    }
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase()
+      result = result.filter(t =>
+        t.title.toLowerCase().includes(q) ||
+        (t.description && t.description.toLowerCase().includes(q))
+      )
+    }
+
+    // Priority filter
+    if (priorityFilter) {
+      result = result.filter(t => t.priority === priorityFilter)
+    }
+
+    // Tag filter
+    if (tagFilter) {
+      const tagId = parseInt(tagFilter)
+      result = result.filter(t => t.tags?.some(tag => tag.id === tagId))
+    }
+
+    // Sorting
+    result.sort((a, b) => {
+      let aVal: any, bVal: any
+      if (sortBy === 'title') {
+        aVal = a.title.toLowerCase()
+        bVal = b.title.toLowerCase()
+      } else if (sortBy === 'priority') {
+        const order = { urgent: 4, high: 3, medium: 2, low: 1, none: 0 }
+        aVal = order[a.priority as keyof typeof order] ?? 0
+        bVal = order[b.priority as keyof typeof order] ?? 0
+      } else if (sortBy === 'due_date') {
+        aVal = a.due_date || ''
+        bVal = b.due_date || ''
+      } else {
+        aVal = a.created_at
+        bVal = b.created_at
+      }
+      if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1
+      if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1
+      return 0
+    })
+
+    return result
+  }, [tasks, filter, searchQuery, priorityFilter, tagFilter, sortBy, sortOrder])
 
   return (
     <SidebarLayout>
@@ -355,7 +390,7 @@ export default function TasksPage() {
           </div>
         ) : (
           <TaskList
-            tasks={tasks}
+            tasks={filteredTasks}
             filter={filter}
             onToggleComplete={handleToggleComplete}
             onEdit={handleEdit}
