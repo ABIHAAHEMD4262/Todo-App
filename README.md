@@ -92,7 +92,7 @@ helm install taskly ./helm-chart -n taskly --create-namespace
 - **Smart actions** – Create, update, complete, delete tasks via chat
 - **Context-aware responses** – Understands priorities, tags, due dates
 
-![AI Chat Demo](docs/screenshots/ai-chat-demo.png)
+![AI Chat Demo](docs/screenshots/todo chat.png)
 *Creating tasks with natural language – GPT-4 understands context, priorities, and dates*
 
 ### 📊 Intelligent Dashboard
@@ -101,7 +101,7 @@ helm install taskly ./helm-chart -n taskly --create-namespace
 - Recent activity feed with action history
 - Quick action buttons for common operations
 
-![Dashboard](docs/screenshots/dashboard-stats.png)
+![Dashboard](docs/screenshots/todo das.png)
 *Real-time statistics and activity tracking*
 
 ### 📋 Advanced Task Features
@@ -112,7 +112,7 @@ helm install taskly ./helm-chart -n taskly --create-namespace
 - **Search & filters** – Find any task instantly
 - **Sort options** – By date, priority, title, status
 
-![Task Management](docs/screenshots/task-filters.png)
+![Task Management](docs/screenshots/todotask.png)
 *Advanced filtering, sorting, and tag management*
 
 ### 🔐 Secure Authentication
@@ -278,19 +278,16 @@ kubectl port-forward deployment/todo-backend -n taskly 8000:8000
 ## 📸 Screenshots
 
 ### AI Chat Interface
-![AI Chat](docs/screenshots/ai-chat-demo.png)
+![AI Chat](docs/screenshots/todo chat.png)
 
 ### Dashboard Statistics
-![Dashboard](docs/screenshots/dashboard-stats.png)
-
-### Task List with Filters
-![Tasks](docs/screenshots/task-filters.png)
+![Dashboard](docs/screenshots/todo das.png)
 
 ### Tag Management
 ![Tags](docs/screenshots/tag-management.png)
 
 ### Kubernetes Pods
-![K8s Pods](docs/screenshots/k8s-pods.png)
+![K8s Pods](docs/screenshots/pods.png)
 
 ---
 

@@ -17,9 +17,11 @@ import {
   Clock,
   Target,
   Zap,
-  Bot
+  Bot,
+  Bell
 } from 'lucide-react'
 import Link from 'next/link'
+import { ReminderList } from '@/components/dashboard/reminder-list'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -27,6 +29,7 @@ export default function DashboardPage() {
 
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<'overview' | 'reminders'>('overview')
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -78,7 +81,35 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {loading ? (
+        {/* Tab Navigation */}
+        <div className="flex items-center gap-2 glass-card p-1.5 mb-8 w-fit">
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 ${
+              activeTab === 'overview'
+                ? 'ai-gradient-bg text-white shadow-md ai-glow'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+            }`}
+          >
+            <BarChart3 className="w-4 h-4" />
+            Overview
+          </button>
+          <button
+            onClick={() => setActiveTab('reminders')}
+            className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 ${
+              activeTab === 'reminders'
+                ? 'ai-gradient-bg text-white shadow-md ai-glow'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+            }`}
+          >
+            <Bell className="w-4 h-4" />
+            Reminders
+          </button>
+        </div>
+
+        {activeTab === 'reminders' ? (
+          <ReminderList userId={user.id} />
+        ) : loading ? (
           <div className="flex justify-center py-12">
             <Loader2 className="w-12 h-12 text-indigo-400 animate-spin" />
           </div>
