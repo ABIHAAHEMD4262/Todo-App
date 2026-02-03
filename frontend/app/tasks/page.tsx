@@ -51,7 +51,14 @@ export default function TasksPage() {
   }
 
   // Load tasks with Phase 5 server-side filtering
-  const loadTasks = async () => {
+  const loadTasks = async (
+    currentFilter: TaskStatus,
+    currentSearch: string,
+    currentPriority: TaskPriority | '',
+    currentTag: string,
+    currentSortBy: TaskSortBy,
+    currentSortOrder: SortOrder
+  ) => {
     if (!user) return
 
     try {
@@ -59,13 +66,13 @@ export default function TasksPage() {
 
       // Build filter params for backend
       const params: any = {
-        status: filter,
-        sort_by: sortBy,
-        sort_order: sortOrder
+        status: currentFilter,
+        sort_by: currentSortBy,
+        sort_order: currentSortOrder
       }
-      if (priorityFilter) params.priority = priorityFilter
-      if (tagFilter) params.tag_ids = tagFilter
-      if (searchQuery.trim()) params.search = searchQuery.trim()
+      if (currentPriority) params.priority = currentPriority
+      if (currentTag) params.tag_ids = currentTag
+      if (currentSearch.trim()) params.search = currentSearch.trim()
 
       const response = await api.tasks.list(user.id, params)
       setTasks(response.tasks)
@@ -87,7 +94,7 @@ export default function TasksPage() {
   // Load tasks when filters change
   useEffect(() => {
     if (user) {
-      loadTasks()
+      loadTasks(filter, searchQuery, priorityFilter, tagFilter, sortBy, sortOrder)
     }
   }, [user, filter, searchQuery, priorityFilter, tagFilter, sortBy, sortOrder])
 
@@ -100,7 +107,7 @@ export default function TasksPage() {
       await api.tasks.create(user.id, data)
       toast.success('Task created successfully!')
       setShowForm(false)
-      loadTasks()
+      loadTasks(filter, searchQuery, priorityFilter, tagFilter, sortBy, sortOrder)
     } catch (error) {
       console.error('Failed to create task:', error)
       toast.error('Failed to create task')
@@ -118,7 +125,7 @@ export default function TasksPage() {
       await api.tasks.update(user.id, editingTask.id, data)
       toast.success('Task updated successfully!')
       setEditingTask(undefined)
-      loadTasks()
+      loadTasks(filter, searchQuery, priorityFilter, tagFilter, sortBy, sortOrder)
     } catch (error) {
       console.error('Failed to update task:', error)
       toast.error('Failed to update task')
@@ -137,7 +144,7 @@ export default function TasksPage() {
     try {
       setTogglingTaskId(taskId)
       await api.tasks.toggleComplete(user.id, taskId)
-      await loadTasks()
+      await loadTasks(filter, searchQuery, priorityFilter, tagFilter, sortBy, sortOrder)
       toast.success(task.completed ? 'Task marked as pending' : 'Task completed!')
     } catch (error) {
       console.error('Failed to toggle task:', error)
@@ -155,7 +162,7 @@ export default function TasksPage() {
     try {
       await api.tasks.delete(user.id, taskId)
       toast.success('Task deleted!')
-      loadTasks()
+      loadTasks(filter, searchQuery, priorityFilter, tagFilter, sortBy, sortOrder)
     } catch (error) {
       console.error('Failed to delete task:', error)
       toast.error('Failed to delete task')
