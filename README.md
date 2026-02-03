@@ -278,16 +278,16 @@ kubectl port-forward deployment/todo-backend -n taskly 8000:8000
 ## 📸 Screenshots
 
 ### AI Chat Interface
-![AI Chat](docs/screenshots/todo chat.png)
+![AI Chat](docs/screenshots/todochat.png)
 
 ### Dashboard Statistics
-![Dashboard](docs/screenshots/todo das.png)
+![Dashboard](docs/screenshots/tododas.PNG )
 
 ### Tag Management
 ![Tags](docs/screenshots/tag-management.png)
 
 ### Kubernetes Pods
-![K8s Pods](docs/screenshots/pods.png)
+![K8s Pods](docs/screenshots/pods.PNG)
 
 ---
 
