@@ -6,11 +6,22 @@ Referencing: @backend/CLAUDE.md, @specs/api/rest-endpoints.md
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import init_db
-from app.events.producer import event_producer, TOPIC_TASK_COMPLETED, TOPIC_REMINDER_DUE
-from app.events.consumer import event_consumer
-from app.scheduler import reminder_checker
 import asyncio
 import os
+
+# Event system imports (optional - may not be available in all deployments)
+try:
+    from app.events.producer import event_producer, TOPIC_TASK_COMPLETED, TOPIC_REMINDER_DUE
+    from app.events.consumer import event_consumer
+    EVENTS_AVAILABLE = True
+except ImportError:
+    EVENTS_AVAILABLE = False
+
+try:
+    from app.scheduler import reminder_checker
+    SCHEDULER_AVAILABLE = True
+except ImportError:
+    SCHEDULER_AVAILABLE = False
 
 # Background task for consumer
 _consumer_task = None
@@ -85,20 +96,24 @@ async def startup_event():
     print("[OK] Database initialized")
     print(f"[OK] CORS enabled for: {cors_origins}")
 
-    # Connect Kafka producer
-    await event_producer.connect()
-    print("[OK] Kafka event producer initialized")
+    # Connect Kafka producer/consumer (if available)
+    if EVENTS_AVAILABLE:
+        await event_producer.connect()
+        print("[OK] Kafka event producer initialized")
 
-    # Connect and start Kafka consumer as background task
-    topics = [TOPIC_TASK_COMPLETED, TOPIC_REMINDER_DUE]
-    await event_consumer.connect(topics)
-    _consumer_task = asyncio.create_task(event_consumer.start_consuming())
-    print("[OK] Kafka event consumer started")
+        topics = [TOPIC_TASK_COMPLETED, TOPIC_REMINDER_DUE]
+        await event_consumer.connect(topics)
+        _consumer_task = asyncio.create_task(event_consumer.start_consuming())
+        print("[OK] Kafka event consumer started")
+    else:
+        print("[SKIP] Event system not available")
 
     # Start reminder checker background task
-    if REMINDER_CHECKER_ENABLED:
+    if REMINDER_CHECKER_ENABLED and SCHEDULER_AVAILABLE:
         await reminder_checker.start()
         print("[OK] Reminder checker started (checks every 60s)")
+    elif not SCHEDULER_AVAILABLE:
+        print("[SKIP] Scheduler not available")
 
 # Shutdown event
 @app.on_event("shutdown")
@@ -107,23 +122,23 @@ async def shutdown_event():
     global _consumer_task
 
     # Stop reminder checker
-    if REMINDER_CHECKER_ENABLED:
+    if REMINDER_CHECKER_ENABLED and SCHEDULER_AVAILABLE:
         await reminder_checker.stop()
         print("[OK] Reminder checker stopped")
 
-    # Stop consumer
-    await event_consumer.stop()
-    if _consumer_task:
-        _consumer_task.cancel()
-        try:
-            await _consumer_task
-        except asyncio.CancelledError:
-            pass
-    print("[OK] Kafka event consumer stopped")
+    # Stop consumer/producer
+    if EVENTS_AVAILABLE:
+        await event_consumer.stop()
+        if _consumer_task:
+            _consumer_task.cancel()
+            try:
+                await _consumer_task
+            except asyncio.CancelledError:
+                pass
+        print("[OK] Kafka event consumer stopped")
 
-    # Stop producer
-    await event_producer.disconnect()
-    print("[OK] Kafka event producer disconnected")
+        await event_producer.disconnect()
+        print("[OK] Kafka event producer disconnected")
 
 # Health check endpoint
 @app.get("/health", tags=["Health"])

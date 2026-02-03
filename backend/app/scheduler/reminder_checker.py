@@ -8,7 +8,10 @@ from datetime import datetime
 from sqlmodel import Session, select, and_
 from app.database import engine
 from app.models import Reminder, Task
-from app.events.producer import event_producer
+try:
+    from app.events.producer import event_producer
+except ImportError:
+    event_producer = None
 
 # Check interval in seconds
 CHECK_INTERVAL = 60  # Check every minute
@@ -83,13 +86,14 @@ class ReminderChecker:
                 reminder.sent_at = now
                 session.add(reminder)
 
-                # Publish Kafka event
-                await event_producer.reminder_due(
-                    user_id=reminder.user_id,
-                    task_id=reminder.task_id,
-                    title=task.title,
-                    minutes_before=task.reminder_minutes or 0
-                )
+                # Publish Kafka event (if available)
+                if event_producer:
+                    await event_producer.reminder_due(
+                        user_id=reminder.user_id,
+                        task_id=reminder.task_id,
+                        title=task.title,
+                        minutes_before=task.reminder_minutes or 0
+                    )
 
                 print(f"[Reminder Checker] Triggered reminder for task: {task.title}")
 

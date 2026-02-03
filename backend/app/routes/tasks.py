@@ -20,7 +20,20 @@ from app.schemas import (
 )
 from typing import Optional
 from datetime import datetime, timedelta
-from app.events.producer import event_producer
+try:
+    from app.events.producer import event_producer
+except ImportError:
+    # Events module not available (e.g., HF Spaces deployment)
+    import asyncio
+
+    class _NoOpProducer:
+        async def task_created(self, *a, **kw): pass
+        async def task_updated(self, *a, **kw): pass
+        async def task_completed(self, *a, **kw): pass
+        async def task_deleted(self, *a, **kw): pass
+        async def reminder_due(self, *a, **kw): pass
+
+    event_producer = _NoOpProducer()
 
 router = APIRouter()
 
