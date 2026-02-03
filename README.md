@@ -92,7 +92,7 @@ helm install taskly ./helm-chart -n taskly --create-namespace
 - **Smart actions** – Create, update, complete, delete tasks via chat
 - **Context-aware responses** – Understands priorities, tags, due dates
 
-![AI Chat Demo](docs/screenshots/todo chat.png)
+![AI Chat Demo](docs/screenshots/todochat.png)
 *Creating tasks with natural language – GPT-4 understands context, priorities, and dates*
 
 ### 📊 Intelligent Dashboard
@@ -101,7 +101,7 @@ helm install taskly ./helm-chart -n taskly --create-namespace
 - Recent activity feed with action history
 - Quick action buttons for common operations
 
-![Dashboard](docs/screenshots/todo das.png)
+![Dashboard](docs/screenshots/tododas.PNG)
 *Real-time statistics and activity tracking*
 
 ### 📋 Advanced Task Features
@@ -353,3 +353,4 @@ MIT License - Hackathon II Submission
 **Version:** 5.0.0 | **Phase V Complete** | **February 2026**
 
 </div>
+
